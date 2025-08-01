@@ -1,4 +1,5 @@
-# bngmetric
+![BNG Metric](bngmetric.png)
+
 An open source Python implementation of the UKs Biodiversity Net Gain Metric
 
 ## Overview
