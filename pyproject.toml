@@ -6,12 +6,25 @@ readme = "README.md"
 authors = [
     { name = "Peter Hurley", email = "petedonhurley@gmail.com" }
 ]
-requires-python = ">=3.13"
+requires-python = ">=3.12"
 dependencies = [
     "jax>=0.7.0",
+    "matplotlib>=3.10.5",
+    "numpyro>=0.18.0",
     "pandas>=2.3.1",
 ]
+
+[project.urls]
+Homepage = "https://github.com/pdh21/bngmetric"
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.setuptools.package-data]
+bngmetric = ["data/*.csv"] # Ensures all .csv files in bngmetric/data/ are included
+
+[dependency-groups]
+dev = [
+    "ipykernel>=6.30.0",
+]
