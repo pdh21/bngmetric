@@ -1,0 +1,133 @@
+Habitat Description,Technical Difficulty Creation,Multiplier,Technical Difficulty Enhancement,Multiplier
+Coastal lagoons - Coastal lagoons,Medium,0.67,Medium,0.67
+Coastal saltmarsh - Saltmarshes and saline reedbeds,High,0.33,Medium,0.67
+Cropland - Arable field margins cultivated annually,Low,1,Low,1
+Cropland - Arable field margins game bird mix,Low,1,Low,1
+Cropland - Arable field margins pollen and nectar,Low,1,Low,1
+Cropland - Arable field margins tussocky,Low,1,Low,1
+Cropland - Cereal crops,Low,1,Low,1
+Cropland - Winter stubble,Low,1,Low,1
+Cropland - Horticulture,Low,1,Low,1
+Cropland - Intensive orchards,Low,1,Low,1
+Cropland - Non-cereal crops,Low,1,Low,1
+Cropland - Temporary grass and clover leys,Low,1,Low,1
+Grassland - Traditional orchards,Low,1,Medium,0.67
+Grassland - Bracken,Low,1,Low,1
+Grassland - Floodplain wetland mosaic and CFGM,High,0.33,Medium,0.67
+Grassland - Lowland calcareous grassland,High,0.33,High,0.33
+Grassland - Lowland dry acid grassland,High,0.33,High,0.33
+Grassland - Lowland meadows,High,0.33,Medium,0.67
+Grassland - Modified grassland,Low,1,Low,1
+Grassland - Other lowland acid grassland,Low,1,Low,1
+Grassland - Other neutral grassland,Low,1,Low,1
+Grassland - Tall herb communities (H6430),High,0.33,High,0.33
+Grassland - Upland acid grassland,Low,1,Low,1
+Grassland - Upland calcareous grassland,High,0.33,High,0.33
+Grassland - Upland hay meadows,High,0.33,Medium,0.67
+Heathland and shrub - Blackthorn scrub,Low,1,Low,1
+Heathland and shrub - Bramble scrub,Low,1,Low,1
+Heathland and shrub - Gorse scrub,Low,1,Low,1
+Heathland and shrub - Hawthorn scrub,Low,1,Low,1
+Heathland and shrub - Hazel scrub,Medium,0.67,Low,1
+Heathland and shrub - Willow scrub,Medium,0.67,Low,1
+Heathland and shrub - Lowland heathland,High,0.33,Medium,0.67
+Heathland and shrub - Mixed scrub,Low,1,Low,1
+Heathland and shrub - Mountain heaths and willow scrub,High,0.33,High,0.33
+Heathland and shrub - Rhododendron scrub,Low,1,Low,1
+Heathland and shrub - Dunes with sea buckthorn (H2160),Medium,0.67,Low,1
+Heathland and shrub - Other sea buckthorn scrub,Low,1,Low,1
+Heathland and shrub - Upland heathland,Medium,0.67,Medium,0.67
+Intertidal sediment - Artificial littoral biogenic reefs,High,0.33,Medium,0.67
+Intertidal sediment - Artificial littoral coarse sediment,Medium,0.67,Medium,0.67
+Intertidal sediment - Artificial littoral mixed sediments,High,0.33,Medium,0.67
+Intertidal sediment - Artificial littoral muddy sand,High,0.33,Medium,0.67
+Intertidal sediment - Artificial littoral seagrass,High,0.33,High,0.33
+Intertidal sediment - Features of littoral sediment,High,0.33,Medium,0.67
+Intertidal sediment - Littoral biogenic reefs - Sabellaria,High,0.33,Medium,0.67
+Intertidal sediment - Littoral coarse sediment,Medium,0.67,Medium,0.67
+Intertidal sediment - Littoral mixed sediments,High,0.33,Medium,0.67
+Intertidal sediment - Littoral mud,High,0.33,Medium,0.67
+Intertidal sediment - Littoral seagrass,High,0.33,High,0.33
+"Intertidal sediment - Littoral seagrass on peat, clay or chalk",Very High,0.1,High,0.33
+Lakes - Aquifer fed naturally fluctuating water bodies,Very High,0.1,High,0.33
+Lakes - Ornamental lake or pond,Low,1,High,0.33
+Lakes - High alkalinity lakes,High,0.33,High,0.33
+Lakes - Low alkalinity lakes,High,0.33,Medium,0.67
+Lakes - Marl lakes,High,0.33,High,0.33
+Lakes - Moderate alkalinity lakes,High,0.33,High,0.33
+Lakes - Peat lakes,High,0.33,High,0.33
+Lakes - Ponds (non-priority habitat),Low,1,Medium,0.67
+Lakes - Ponds (priority habitat),Medium,0.67,Medium,0.67
+Lakes - Reservoirs,Medium,0.67,Medium,0.67
+Lakes - Temporary lakes ponds and pools (H3170),Medium,0.67,Medium,0.67
+Rocky shore - Features of littoral rock,High,0.33,Medium,0.67
+"Rocky shore - Features of littoral rock - on peat, clay or chalk",Very High,0.1,Medium,0.67
+Rocky shore - High energy littoral rock,High,0.33,Medium,0.67
+"Rocky shore - High energy littoral rock - on peat, clay or chalk",Very High,0.1,Medium,0.67
+Rocky shore - Low energy littoral rock,High,0.33,Medium,0.67
+"Rocky shore - Low energy littoral rock - on peat, clay or chalk",Very High,0.1,Medium,0.67
+Rocky shore - Moderate energy littoral rock,High,0.33,Medium,0.67
+"Rocky shore - Moderate energy littoral rock - on peat, clay or chalk",Very High,0.1,Medium,0.67
+Sparsely vegetated land - Calaminarian grasslands,Very High,0.1,Medium,0.67
+Sparsely vegetated land - Coastal sand dunes,Very High,0.1,Medium,0.67
+Sparsely vegetated land - Coastal vegetated shingle,Very High,0.1,Medium,0.67
+Sparsely vegetated land - Inland rock outcrop and scree habitats,High,0.33,Low,1
+Sparsely vegetated land - Limestone pavement,Very High,0.1,Medium,0.67
+Sparsely vegetated land - Maritime cliff and slopes,High,0.33,Medium,0.67
+Sparsely vegetated land - Other inland rock and scree,Medium,0.67,Medium,0.67
+Sparsely vegetated land - Ruderal/Ephemeral,Low,1,Medium,0.67
+Sparsely vegetated land - Tall forbs,Low,1,Medium,0.67
+Urban - Vacant or derelict land,Low,1,Low,1
+Urban - Bare ground,Low,1,Low,1
+Urban - Allotments,Low,1,Low,1
+"Urban - Artificial unvegetated, unsealed surface",Low,1,Low,1
+Urban - Bioswale,Medium,0.67,Low,1
+Urban - Intensive green roof,Low,1,Low,1
+Urban - Built linear features,Low,1,Low,1
+Urban - Cemeteries and churchyards,Medium,0.67,Low,1
+Urban - Developed land; sealed surface,Low,1,Low,1
+Urban - Other green roof,Low,1,Low,1
+Urban - Facade-bound green wall,Medium,0.67,Medium,0.67
+Urban - Ground based green wall,Medium,0.67,Medium,0.67
+Urban - Ground level planters,Low,1,Low,1
+Urban - Biodiverse green roof,Medium,0.67,Medium,0.67
+Urban - Introduced shrub,Low,1,Low,1
+Urban - Open mosaic habitats on previously developed land,Medium,0.67,Medium,0.67
+Urban - Rain garden,Low,1,Low,1
+Urban - Actively worked sand pit quarry or open cast mine,Medium,0.67,Low,1
+Individual trees - Urban tree,Low,1,Low,1
+Urban - Sustainable drainage system,Medium,0.67,Medium,0.67
+Urban - Unvegetated garden,Low,1,Low,1
+Urban - Vegetated garden,Low,1,Low,1
+Wetland - Blanket bog,Very High,0.1,High,0.33
+Wetland - Depressions on peat substrates (H7150),Very High,0.1,High,0.33
+Wetland - Fens (upland and lowland),High,0.33,High,0.33
+Wetland - Lowland raised bog,Very High,0.1,High,0.33
+Wetland - Oceanic valley mire[1] (D2.1),Very High,0.1,High,0.33
+Wetland - Purple moor grass and rush pastures,High,0.33,High,0.33
+Wetland - Reedbeds,Medium,0.67,Medium,0.67
+Wetland - Transition mires and quaking bogs (H7140),Very High,0.1,High,0.33
+Woodland and forest - Felled,High,0.33,Low,1
+Woodland and forest - Lowland beech and yew woodland,High,0.33,High,0.33
+Woodland and forest - Lowland mixed deciduous woodland,High,0.33,High,0.33
+Woodland and forest - Native pine woodlands,High,0.33,High,0.33
+Woodland and forest - Other coniferous woodland,Low,1,Low,1
+Woodland and forest - Other Scot's pine woodland,Medium,0.67,Medium,0.67
+Woodland and forest - Other woodland; broadleaved,Low,1,Low,1
+Woodland and forest - Other woodland; mixed,Low,1,Low,1
+Woodland and forest - Upland birchwoods,Medium,0.67,Medium,0.67
+Woodland and forest - Upland mixed ashwoods,High,0.33,High,0.33
+Woodland and forest - Upland oakwood,High,0.33,High,0.33
+Woodland and forest - Wet woodland,Medium,0.67,Medium,0.67
+Woodland and forest - Wood-pasture and parkland,Very High,0.1,High,0.33
+Intertidal sediment - Littoral sand,Medium,0.67,Medium,0.67
+Intertidal sediment - Littoral muddy sand,High,0.33,Medium,0.67
+Intertidal hard structures - Artificial hard structures,Medium,0.67,Medium,0.67
+Intertidal hard structures - Artificial features of hard structures,Medium,0.67,Medium,0.67
+Intertidal hard structures - Artificial hard structures with integrated greening of grey infrastructure (IGGI),Medium,0.67,Medium,0.67
+Coastal saltmarsh - Artificial saltmarshes and saline reedbeds,High,0.33,Medium,0.67
+Intertidal sediment - Littoral biogenic reefs - Mussels,High,0.33,Medium,0.67
+Intertidal sediment - Artificial littoral mud,High,0.33,Medium,0.67
+Intertidal sediment - Artificial littoral sand,Medium,0.67,Medium,0.67
+Watercourse footprint - Watercourse footprint,Low,1,Low,1
+Individual trees - Rural tree,Low,1,Low,1
