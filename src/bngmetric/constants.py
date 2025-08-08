@@ -73,3 +73,54 @@ HABITAT_TO_LEVEL2 = _load_level2_mapping()
 LEVEL2_TO_ID = {name: i for i, name in enumerate(pd.Series(HABITAT_TO_LEVEL2).unique())}
 # JAX array for Level 2 IDs, ordered by master HABITAT_TYPE_TO_ID
 LEVEL2_IDS_ARRAY = jnp.array([LEVEL2_TO_ID[HABITAT_TO_LEVEL2[i]] for i in HABITAT_TYPE_TO_ID.keys()], dtype=jnp.int32)
+
+#------Creation tables----
+def _load_creation_table():
+    """Loads the creation table from CSV and returns a DataFrame."""
+    with pkg_resources.files(bngmetric_data).joinpath('creation_multiplier.csv').open('r') as f:
+        df_creation=pd.read_csv(f)
+    ordered_creation_values=[]
+    # Get condition categories (column names excluding 'Habitat_Type')
+    condition_categories = [col for col in df_creation.columns if col != 'Habitat Description']
+    for habitat_name in HABITAT_TYPE_TO_ID.keys():
+        if habitat_name in df_creation['Habitat Description'].values:
+            # Get the row for this habitat from the loaded CSV, and extract the condition columns
+            row_data = df_creation[df_creation['Habitat Description'] == habitat_name][condition_categories].iloc[0]
+            # Convert any "30+" strings to numeric 30
+            row_data = row_data.apply(lambda x: 30 if isinstance(x, str) and "30+" in x else x)
+            ordered_creation_values.append(row_data.values)
+        else:
+            # If a habitat from master list is not in condition table, assume all 0s for conditions
+            # (or raise an error if this should be impossible)
+            ordered_creation_values.append(jnp.full(len(condition_categories),jnp.nan, dtype=jnp.float32))
+    ordered_creation_values = jnp.array(ordered_creation_values, dtype=jnp.float32)
+
+    return ordered_creation_values
+
+# Load the creation data and get the JAX-compatible matrix
+CREATION_MULTIPLIERS_MATRIX = _load_creation_table()
+
+def _load_difficulty_multiplier():
+    """Loads the difficulty multiplier from CSV and returns a dictionary for mapping."""
+    with pkg_resources.files(bngmetric_data).joinpath('risk_multiplier.csv').open('r') as f:
+        df_difficulty = pd.read_csv(f)
+    ordered_creation_values=[]
+    ordered_enhancement_values = []
+    for habitat_name in HABITAT_TYPE_TO_ID.keys():
+        if habitat_name in df_difficulty['Habitat Description'].values:
+            # Get the row for this habitat from the loaded CSV, and extract the condition columns
+            row_data = df_difficulty[df_difficulty['Habitat Description'] == habitat_name]['Multiplier'].iloc[0]
+            ordered_creation_values.append(row_data.values)
+            row_data = df_difficulty[df_difficulty['Habitat Description'] == habitat_name]['Multiplier.1'].iloc[0]
+            ordered_enhancement_values.append(row_data.values)
+        else:
+            # If a habitat from master list is not in condition table, assume all 0s for conditions
+            # (or raise an error if this should be impossible)
+            ordered_creation_values.append(jnp.nan)
+            ordered_enhancement_values.append(jnp.nan)
+    ordered_creation_values = jnp.array(ordered_creation_values, dtype=jnp.float32)
+    ordered_enhancement_values = jnp.array(ordered_enhancement_values, dtype=jnp.float32)
+    return ordered_creation_values, ordered_enhancement_values
+
+CREATION_RISK,ENHANCEMENT_RISK = _load_difficulty_multiplier()
+
