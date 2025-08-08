@@ -3,6 +3,7 @@ import jax.numpy as jnp
 import importlib.resources as pkg_resources
 from . import data as bngmetric_data # Import the 'data' subpackage
 
+
 # --- Load Distinctiveness and Create Master Habitat ID Mapping ---
 def _load_distinctiveness_data():
     """Loads distinctiveness from CSV and returns a dictionary for mapping."""
@@ -53,10 +54,22 @@ def _load_condition_multipliers_matrix():
     
     return condition_categories, CONDITION_MULTIPLIERS_MATRIX_JAX
 
-# Load the condition data and get the JAX-compatible matrix
+# Load the condition data and get the JAX-compatible matrixs
 CONDITION_CATEGORIES_FOR_MATRIX, CONDITION_MULTIPLIERS_MATRIX = _load_condition_multipliers_matrix()
 
 # Condition Category String to ID for Condition Matrix Columns
 CONDITION_CATEGORY_TO_ID = {
     name: i for i, name in enumerate(CONDITION_CATEGORIES_FOR_MATRIX)
 }
+
+def _load_level2_mapping():
+    """Loads Level 2 habitat labels from CSV and creates a mapping."""
+    with pkg_resources.files(bngmetric_data).joinpath('habitat_LUT.csv').open('r') as f:
+        df = pd.read_csv(f)
+    return dict(zip(df['Labelling column'], df['Level 2 Label']))
+
+HABITAT_TO_LEVEL2 = _load_level2_mapping()
+# Level 2 Label to ID mapping for consistent testing
+LEVEL2_TO_ID = {name: i for i, name in enumerate(pd.Series(HABITAT_TO_LEVEL2).unique())}
+# JAX array for Level 2 IDs, ordered by master HABITAT_TYPE_TO_ID
+LEVEL2_IDS_ARRAY = jnp.array([LEVEL2_TO_ID[HABITAT_TO_LEVEL2[i]] for i in HABITAT_TYPE_TO_ID.keys()], dtype=jnp.int32)
