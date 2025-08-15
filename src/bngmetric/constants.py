@@ -76,7 +76,9 @@ LEVEL2_IDS_ARRAY = jnp.array([LEVEL2_TO_ID[HABITAT_TO_LEVEL2[i]] for i in HABITA
 
 #------Creation tables----
 def _load_creation_table():
-    """Loads the creation table from CSV and returns a DataFrame."""
+    """Loads the creation table from CSV and returns a DataFrame.
+    This table contains the time to create habitats based on condition.
+    """
     with pkg_resources.files(bngmetric_data).joinpath('creation_multiplier.csv').open('r') as f:
         df_creation=pd.read_csv(f)
     ordered_creation_values=[]
@@ -101,7 +103,9 @@ def _load_creation_table():
 CREATION_MULTIPLIERS_MATRIX = _load_creation_table()
 
 def _load_temporal_multiplier():
-    """Loads the temporal multiplier from CSV and returns a JAX array."""
+    """Loads the temporal multiplier from CSV and returns a JAX array.
+    This Table converts the time to target years into a multiplier.
+    """
     with pkg_resources.files(bngmetric_data).joinpath('temporal_multiplier_LUT.csv').open('r') as f:
         df_temporal = pd.read_csv(f)
     # Convert the 'Years' column to a JAX array of multipliers
@@ -111,7 +115,9 @@ TEMPORAL_MULTIPLIER_LOOKUP = _load_temporal_multiplier()
 
 
 def _load_difficulty_multiplier():
-    """Loads the difficulty multiplier from CSV and returns a dictionary for mapping."""
+    """Loads the difficulty multiplier from CSV and returns a dictionary for mapping.
+    This table contains difficulty multipliers for habitat creation and enhancement
+    """
     with pkg_resources.files(bngmetric_data).joinpath('risk_multiplier.csv').open('r') as f:
         df_difficulty = pd.read_csv(f)
     ordered_creation_values=[]
