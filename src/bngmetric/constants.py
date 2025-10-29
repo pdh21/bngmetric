@@ -178,7 +178,7 @@ def _load_temporal_enhancement_multiplier():
     n_habitats = len(HABITAT_TYPE_TO_ID)
     conditions = list(CONDITION_CATEGORY_TO_ID.keys())
     n_conditions = len(conditions)
-    s=np.full((n_habitats, n_conditions, n_conditions), jnp.nan, dtype=np.float32)
+    s=jnp.full((n_habitats, n_conditions, n_conditions), jnp.nan, dtype=jnp.float32)
     # Reshape the values into a 3D array 
     for habitat in HABITAT_TYPE_TO_ID.keys():
         for start_condition in CONDITION_CATEGORY_TO_ID.keys():
