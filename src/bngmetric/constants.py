@@ -174,31 +174,26 @@ def _load_temporal_enhancement_multiplier():
 
 
     # ---  Get values and reshape ---
-    # The .values will be a 1D array ordered correctly by the new index
+    # Use numpy for building (mutable), then convert to JAX
+    import numpy as np
     n_habitats = len(HABITAT_TYPE_TO_ID)
     conditions = list(CONDITION_CATEGORY_TO_ID.keys())
     n_conditions = len(conditions)
-    s=jnp.full((n_habitats, n_conditions, n_conditions), jnp.nan, dtype=jnp.float32)
-    # Reshape the values into a 3D array 
+    s = np.full((n_habitats, n_conditions, n_conditions), np.nan, dtype=np.float32)
+    # Reshape the values into a 3D array
     for habitat in HABITAT_TYPE_TO_ID.keys():
         for start_condition in CONDITION_CATEGORY_TO_ID.keys():
             try:
                 for tc in final_enhance.loc[habitat, (start_condition,)].index:
                     # Extract the habitat ID and condition IDs
                     habitat_id = HABITAT_TYPE_TO_ID[habitat]
-                    current_id= CONDITION_CATEGORY_TO_ID[start_condition]
+                    current_id = CONDITION_CATEGORY_TO_ID[start_condition]
                     target_id = CONDITION_CATEGORY_TO_ID[tc]
                     s[habitat_id, current_id, target_id] = final_enhance.loc[habitat, (start_condition, tc)]
             except Exception as e:
-                #print(f"Error processing habitat '{habitat}' with start condition '{start_condition}': {e}")
                 continue
 
-
-        #start_condition_id = CONDITION_CATEGORY_TO_ID[start_condition]
-        #target_condition_id = CONDITION_CATEGORY_TO_ID[target_condition]
-        #s[habitat_id, start_condition_id, target_condition_id] = s.values[i]
-
-    # --- 2. Convert to JAX array ---
+    # Convert to JAX array
     lookup_jax_same = jnp.array(s, dtype=jnp.float32)
 
     ## ----Different distinctiveness values----
@@ -227,5 +222,48 @@ def _load_temporal_enhancement_multiplier():
 
 DISTINCTIVENESS_ENHANCEMENT_TEMPORAL,CONDITION_ENHANCEMENT_TEMPORAL = _load_temporal_enhancement_multiplier()
 
+# Column index mapping for DISTINCTIVENESS_ENHANCEMENT_TEMPORAL
+# This maps condition names to column indices in the distinctiveness enhancement matrix
+# (different ordering than CONDITION_CATEGORY_TO_ID)
+DISTINCTIVENESS_ENHANCEMENT_CONDITION_TO_COL = {
+    'N/A - Other': 0,
+    'Condition Assessment N/A': 1,
+    'Poor': 2,
+    'Fairly Poor': 3,
+    'Moderate': 4,
+    'Fairly Good': 5,
+    'Good': 6
+}
+
+# JAX array to convert from CONDITION_CATEGORY_TO_ID index to distinctiveness enhancement column
+# Usage: col_idx = CONDITION_ID_TO_DIST_ENH_COL[condition_id]
+_condition_id_to_dist_col = []
+for cond_name in CONDITION_CATEGORY_TO_ID.keys():
+    _condition_id_to_dist_col.append(DISTINCTIVENESS_ENHANCEMENT_CONDITION_TO_COL[cond_name])
+CONDITION_ID_TO_DIST_ENH_COL = jnp.array(_condition_id_to_dist_col, dtype=jnp.int32)
 
 
+# =============================================================================
+# SPATIAL RISK MULTIPLIERS (for off-site compensation)
+# =============================================================================
+
+# Spatial risk categories and their multipliers
+# Applied to off-site habitat creation/enhancement based on distance from impact site
+SPATIAL_RISK_CATEGORY_TO_ID = {
+    'Inside LPA/NCA': 0,
+    'Neighbouring LPA/NCA': 1,
+    'Beyond neighbouring LPA/NCA': 2,
+}
+
+# JAX array of spatial risk multipliers indexed by category ID
+SPATIAL_RISK_MULTIPLIERS = jnp.array([1.0, 0.75, 0.5], dtype=jnp.float32)
+
+# Additional categories for intertidal habitats (same multiplier values)
+SPATIAL_RISK_CATEGORY_INTERTIDAL_TO_ID = {
+    'Inside Marine Plan Area': 0,
+    'Neighbouring Marine Plan Area': 1,
+    'Beyond neighbouring Marine Plan Area': 2,
+}
+
+# For off-site providers, spatial risk = 1.0 (no penalty)
+OFFSITE_PROVIDER_SPATIAL_RISK = 1.0

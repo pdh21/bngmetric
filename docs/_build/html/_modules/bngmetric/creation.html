@@ -1,0 +1,356 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>bngmetric.creation &mdash; bngmetric 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            bngmetric
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/basic.html">Basic Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/creation_enhancement.html">Habitat Creation &amp; Enhancement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/offsite.html">Off-site Compensation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced Analysis</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../advanced/sensitivity.html">Sensitivity Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../advanced/uncertainty.html">Uncertainty Propagation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api/core.html">Core Calculations API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/creation.html">Creation API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/enhancement.html">Enhancement API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/constants.html">Constants API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">bngmetric</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">bngmetric.creation</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for bngmetric.creation</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">jax</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jax.numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">jnp</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">jax</span><span class="w"> </span><span class="kn">import</span> <span class="n">jit</span><span class="p">,</span> <span class="n">vmap</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.constants</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">HABITAT_TYPE_TO_ID</span><span class="p">,</span>
+    <span class="n">CONDITION_CATEGORY_TO_ID</span><span class="p">,</span>
+    <span class="n">CREATION_MULTIPLIERS_MATRIX</span><span class="p">,</span>
+    <span class="n">CREATION_RISK</span><span class="p">,</span>
+    <span class="n">TEMPORAL_MULTIPLIER_LOOKUP</span><span class="p">,</span>
+    <span class="n">SPATIAL_RISK_CATEGORY_TO_ID</span><span class="p">,</span>
+    <span class="n">SPATIAL_RISK_MULTIPLIERS</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.core_calculations</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_distinctiveness_value</span><span class="p">,</span> <span class="n">get_condition_multiplier</span>
+
+<div class="viewcode-block" id="get_temporal_multiplier">
+<a class="viewcode-back" href="../../api/creation.html#bngmetric.creation.get_temporal_multiplier">[docs]</a>
+<span class="nd">@jit</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_temporal_multiplier</span><span class="p">(</span><span class="n">habitat_id</span><span class="p">:</span> <span class="nb">int</span>
+                            <span class="p">,</span><span class="n">condition_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Retrieves the temporal multiplier for a given number of years</span>
+<span class="sd">    by looking up in the creation multipliers matrix.&quot;&quot;&quot;</span>
+    <span class="n">time_to_target_years</span><span class="o">=</span><span class="n">CREATION_MULTIPLIERS_MATRIX</span><span class="p">[</span><span class="n">habitat_id</span><span class="p">,</span><span class="n">condition_id</span><span class="p">]</span>
+    <span class="n">is_disallowed</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">time_to_target_years</span><span class="p">)</span>
+    <span class="n">safe_years_float</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">nan_to_num</span><span class="p">(</span><span class="n">time_to_target_years</span><span class="p">,</span> <span class="n">nan</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+    <span class="n">safe_year_indices</span> <span class="o">=</span> <span class="n">safe_years_float</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+    <span class="n">all_multipliers</span> <span class="o">=</span> <span class="n">TEMPORAL_MULTIPLIER_LOOKUP</span><span class="p">[</span><span class="n">safe_year_indices</span><span class="p">,]</span>
+    <span class="n">final_temporal_multipliers</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+        <span class="n">is_disallowed</span><span class="p">,</span>  <span class="c1"># Condition: Was this slot originally nan?</span>
+        <span class="mf">0.0</span><span class="p">,</span>            <span class="c1"># If True: Set multiplier to 0.0</span>
+        <span class="n">all_multipliers</span> <span class="c1"># If False: Use the looked-up multiplier</span>
+        <span class="p">)</span>
+    <span class="c1"># Assumes TEMPORAL_MULTIPLIER_LOOKUP is a JAX array indexed by years</span>
+    <span class="k">return</span> <span class="n">final_temporal_multipliers</span></div>
+
+
+<div class="viewcode-block" id="get_difficulty_multiplier">
+<a class="viewcode-back" href="../../api/creation.html#bngmetric.creation.get_difficulty_multiplier">[docs]</a>
+<span class="nd">@jit</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_difficulty_multiplier</span><span class="p">(</span><span class="n">habitat_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Retrieves the difficulty multiplier for creating a given habitat ID.&quot;&quot;&quot;</span>
+    <span class="c1"># Assumes CREATION_RISK is a JAX array indexed by habitat_id</span>
+    <span class="k">return</span> <span class="n">CREATION_RISK</span><span class="p">[</span><span class="n">habitat_id</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="calculate_creation_bng_unit">
+<a class="viewcode-back" href="../../api/creation.html#bngmetric.creation.calculate_creation_bng_unit">[docs]</a>
+<span class="nd">@jit</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">calculate_creation_bng_unit</span><span class="p">(</span>
+    <span class="n">habitat_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">condition_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">area</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">strategic_multiplier</span><span class="p">:</span> <span class="nb">float</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculates the biodiversity units for a single habitat creation parcel.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">distinctiveness</span> <span class="o">=</span> <span class="n">get_distinctiveness_value</span><span class="p">(</span><span class="n">habitat_id</span><span class="p">)</span>
+    <span class="n">condition_m</span> <span class="o">=</span> <span class="n">get_condition_multiplier</span><span class="p">(</span><span class="n">habitat_id</span><span class="p">,</span> <span class="n">condition_id</span><span class="p">)</span>
+    <span class="n">temporal_m</span> <span class="o">=</span> <span class="n">get_temporal_multiplier</span><span class="p">(</span><span class="n">habitat_id</span><span class="p">,</span><span class="n">condition_id</span><span class="p">)</span>
+    <span class="n">difficulty_m</span> <span class="o">=</span> <span class="n">get_difficulty_multiplier</span><span class="p">(</span><span class="n">habitat_id</span><span class="p">)</span>
+
+    <span class="n">units</span> <span class="o">=</span> <span class="n">area</span> <span class="o">*</span> <span class="n">distinctiveness</span> <span class="o">*</span> <span class="n">condition_m</span> <span class="o">*</span> <span class="n">strategic_multiplier</span> <span class="o">*</span> <span class="n">temporal_m</span> <span class="o">*</span> <span class="n">difficulty_m</span>
+    <span class="k">return</span> <span class="n">units</span></div>
+
+
+<div class="viewcode-block" id="calculate_batched_creation_bng_units">
+<a class="viewcode-back" href="../../api/creation.html#bngmetric.creation.calculate_batched_creation_bng_units">[docs]</a>
+<span class="nd">@jit</span>
+<span class="nd">@vmap</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">calculate_batched_creation_bng_units</span><span class="p">(</span>
+    <span class="n">habitat_ids</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="n">condition_ids</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="n">areas</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="n">strategic_multipliers</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculates creation biodiversity units for multiple habitat parcels in a batch.</span>
+<span class="sd">    Inputs should be JAX arrays of the same length.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">calculate_creation_bng_unit</span><span class="p">(</span>
+        <span class="n">habitat_ids</span><span class="p">,</span> <span class="n">condition_ids</span><span class="p">,</span> <span class="n">areas</span><span class="p">,</span> <span class="n">strategic_multipliers</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="calculate_creation_bng_from_dataframe">
+<a class="viewcode-back" href="../../api/creation.html#bngmetric.creation.calculate_creation_bng_from_dataframe">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">calculate_creation_bng_from_dataframe</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculates total creation biodiversity units from a pandas DataFrame.</span>
+<span class="sd">    For on-site creation (no spatial risk multiplier).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">habitat_ids</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">HABITAT_TYPE_TO_ID</span><span class="p">[</span><span class="n">ht</span><span class="p">]</span> <span class="k">for</span> <span class="n">ht</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Habitat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">])</span>
+    <span class="n">condition_ids</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">CONDITION_CATEGORY_TO_ID</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Condition&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">])</span>
+    <span class="n">areas</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Area&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+    <span class="n">strategic_multipliers</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Strategic_Significance&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+
+    <span class="n">parcel_units</span> <span class="o">=</span> <span class="n">calculate_batched_creation_bng_units</span><span class="p">(</span>
+        <span class="n">habitat_ids</span><span class="p">,</span> <span class="n">condition_ids</span><span class="p">,</span> <span class="n">areas</span><span class="p">,</span> <span class="n">strategic_multipliers</span>
+    <span class="p">)</span>
+
+    <span class="n">total_bng</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">parcel_units</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">total_bng</span><span class="p">)</span></div>
+
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># OFF-SITE CREATION (includes spatial risk multiplier)</span>
+<span class="c1"># =============================================================================</span>
+
+<div class="viewcode-block" id="get_spatial_risk_multiplier">
+<a class="viewcode-back" href="../../api/creation.html#bngmetric.creation.get_spatial_risk_multiplier">[docs]</a>
+<span class="nd">@jit</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_spatial_risk_multiplier</span><span class="p">(</span><span class="n">spatial_risk_category_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Retrieves the spatial risk multiplier for off-site compensation.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">SPATIAL_RISK_MULTIPLIERS</span><span class="p">[</span><span class="n">spatial_risk_category_id</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="calculate_offsite_creation_bng_unit">
+<a class="viewcode-back" href="../../api/creation.html#bngmetric.creation.calculate_offsite_creation_bng_unit">[docs]</a>
+<span class="nd">@jit</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">calculate_offsite_creation_bng_unit</span><span class="p">(</span>
+    <span class="n">habitat_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">condition_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">area</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">strategic_multiplier</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="n">spatial_risk_category_id</span><span class="p">:</span> <span class="nb">int</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculates the biodiversity units for a single off-site habitat creation parcel.</span>
+<span class="sd">    Includes spatial risk multiplier based on distance from impact site.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        habitat_id: ID of the habitat being created</span>
+<span class="sd">        condition_id: Target condition ID</span>
+<span class="sd">        area: Area in hectares</span>
+<span class="sd">        strategic_multiplier: Strategic significance multiplier</span>
+<span class="sd">        spatial_risk_category_id: Spatial risk category (0=Inside LPA, 1=Neighbouring, 2=Beyond)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">distinctiveness</span> <span class="o">=</span> <span class="n">get_distinctiveness_value</span><span class="p">(</span><span class="n">habitat_id</span><span class="p">)</span>
+    <span class="n">condition_m</span> <span class="o">=</span> <span class="n">get_condition_multiplier</span><span class="p">(</span><span class="n">habitat_id</span><span class="p">,</span> <span class="n">condition_id</span><span class="p">)</span>
+    <span class="n">temporal_m</span> <span class="o">=</span> <span class="n">get_temporal_multiplier</span><span class="p">(</span><span class="n">habitat_id</span><span class="p">,</span> <span class="n">condition_id</span><span class="p">)</span>
+    <span class="n">difficulty_m</span> <span class="o">=</span> <span class="n">get_difficulty_multiplier</span><span class="p">(</span><span class="n">habitat_id</span><span class="p">)</span>
+    <span class="n">spatial_risk_m</span> <span class="o">=</span> <span class="n">get_spatial_risk_multiplier</span><span class="p">(</span><span class="n">spatial_risk_category_id</span><span class="p">)</span>
+
+    <span class="n">units</span> <span class="o">=</span> <span class="p">(</span><span class="n">area</span> <span class="o">*</span> <span class="n">distinctiveness</span> <span class="o">*</span> <span class="n">condition_m</span> <span class="o">*</span> <span class="n">strategic_multiplier</span> <span class="o">*</span>
+             <span class="n">temporal_m</span> <span class="o">*</span> <span class="n">difficulty_m</span> <span class="o">*</span> <span class="n">spatial_risk_m</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">units</span></div>
+
+
+
+<div class="viewcode-block" id="calculate_batched_offsite_creation_bng_units">
+<a class="viewcode-back" href="../../api/creation.html#bngmetric.creation.calculate_batched_offsite_creation_bng_units">[docs]</a>
+<span class="nd">@jit</span>
+<span class="nd">@vmap</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">calculate_batched_offsite_creation_bng_units</span><span class="p">(</span>
+    <span class="n">habitat_ids</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="n">condition_ids</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="n">areas</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="n">strategic_multipliers</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="n">spatial_risk_category_ids</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculates off-site creation biodiversity units for multiple parcels in a batch.</span>
+<span class="sd">    Inputs should be JAX arrays of the same length.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">calculate_offsite_creation_bng_unit</span><span class="p">(</span>
+        <span class="n">habitat_ids</span><span class="p">,</span> <span class="n">condition_ids</span><span class="p">,</span> <span class="n">areas</span><span class="p">,</span> <span class="n">strategic_multipliers</span><span class="p">,</span> <span class="n">spatial_risk_category_ids</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="calculate_offsite_creation_bng_from_dataframe">
+<a class="viewcode-back" href="../../api/creation.html#bngmetric.creation.calculate_offsite_creation_bng_from_dataframe">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">calculate_offsite_creation_bng_from_dataframe</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculates total off-site creation biodiversity units from a pandas DataFrame.</span>
+
+<span class="sd">    Expected columns:</span>
+<span class="sd">        - Habitat: habitat type string</span>
+<span class="sd">        - Condition: target condition string</span>
+<span class="sd">        - Area: area in hectares</span>
+<span class="sd">        - Strategic_Significance: strategic significance multiplier</span>
+<span class="sd">        - Spatial_Risk: spatial risk category string (&#39;Inside LPA/NCA&#39;, &#39;Neighbouring LPA/NCA&#39;, &#39;Beyond neighbouring LPA/NCA&#39;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">habitat_ids</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">HABITAT_TYPE_TO_ID</span><span class="p">[</span><span class="n">ht</span><span class="p">]</span> <span class="k">for</span> <span class="n">ht</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Habitat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">])</span>
+    <span class="n">condition_ids</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">CONDITION_CATEGORY_TO_ID</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Condition&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">])</span>
+    <span class="n">areas</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Area&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+    <span class="n">strategic_multipliers</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Strategic_Significance&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+    <span class="n">spatial_risk_ids</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">SPATIAL_RISK_CATEGORY_TO_ID</span><span class="p">[</span><span class="n">sr</span><span class="p">]</span> <span class="k">for</span> <span class="n">sr</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Spatial_Risk&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">])</span>
+
+    <span class="n">parcel_units</span> <span class="o">=</span> <span class="n">calculate_batched_offsite_creation_bng_units</span><span class="p">(</span>
+        <span class="n">habitat_ids</span><span class="p">,</span> <span class="n">condition_ids</span><span class="p">,</span> <span class="n">areas</span><span class="p">,</span> <span class="n">strategic_multipliers</span><span class="p">,</span> <span class="n">spatial_risk_ids</span>
+    <span class="p">)</span>
+
+    <span class="n">total_bng</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">parcel_units</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">total_bng</span><span class="p">)</span></div>
+
+
+
+<span class="c1"># Utility functions for JAX-based optimization</span>
+<div class="viewcode-block" id="calculate_total_creation_units_from_jax_arrays">
+<a class="viewcode-back" href="../../api/creation.html#bngmetric.creation.calculate_total_creation_units_from_jax_arrays">[docs]</a>
+<span class="nd">@jit</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">calculate_total_creation_units_from_jax_arrays</span><span class="p">(</span>
+    <span class="n">habitat_ids</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="n">condition_ids</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="n">areas</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="n">strategic_multipliers</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculates the sum of on-site creation biodiversity units from JAX arrays.</span>
+<span class="sd">    This is the function to differentiate for sensitivity analysis.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">parcel_units</span> <span class="o">=</span> <span class="n">calculate_batched_creation_bng_units</span><span class="p">(</span>
+        <span class="n">habitat_ids</span><span class="p">,</span> <span class="n">condition_ids</span><span class="p">,</span> <span class="n">areas</span><span class="p">,</span> <span class="n">strategic_multipliers</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">parcel_units</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="calculate_total_offsite_creation_units_from_jax_arrays">
+<a class="viewcode-back" href="../../api/creation.html#bngmetric.creation.calculate_total_offsite_creation_units_from_jax_arrays">[docs]</a>
+<span class="nd">@jit</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">calculate_total_offsite_creation_units_from_jax_arrays</span><span class="p">(</span>
+    <span class="n">habitat_ids</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="n">condition_ids</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="n">areas</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="n">strategic_multipliers</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="n">spatial_risk_category_ids</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculates the sum of off-site creation biodiversity units from JAX arrays.</span>
+<span class="sd">    This is the function to differentiate for sensitivity analysis.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">parcel_units</span> <span class="o">=</span> <span class="n">calculate_batched_offsite_creation_bng_units</span><span class="p">(</span>
+        <span class="n">habitat_ids</span><span class="p">,</span> <span class="n">condition_ids</span><span class="p">,</span> <span class="n">areas</span><span class="p">,</span> <span class="n">strategic_multipliers</span><span class="p">,</span> <span class="n">spatial_risk_category_ids</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">parcel_units</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Peter Hurley.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
