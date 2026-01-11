@@ -1,0 +1,318 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>bngmetric &mdash; bngmetric 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=01f34227"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Basic Usage" href="usage/basic.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            bngmetric
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="usage/basic.html">Basic Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage/creation_enhancement.html">Habitat Creation &amp; Enhancement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage/offsite.html">Off-site Compensation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced Analysis</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="advanced/sensitivity.html">Sensitivity Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced/uncertainty.html">Uncertainty Propagation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api/core.html">Core Calculations API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/creation.html">Creation API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/enhancement.html">Enhancement API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/constants.html">Constants API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">bngmetric</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">bngmetric</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="bngmetric">
+<h1>bngmetric<a class="headerlink" href="#bngmetric" title="Link to this heading"></a></h1>
+<p>An open source Python implementation of the UK’s Biodiversity Net Gain (BNG) Statutory Metric.</p>
+<a class="reference external image-reference" href="https://www.python.org/downloads/"><img alt="https://img.shields.io/badge/python-3.12+-blue.svg" src="https://img.shields.io/badge/python-3.12+-blue.svg" />
+</a>
+<a class="reference external image-reference" href="https://github.com/google/jax"><img alt="https://img.shields.io/badge/JAX-enabled-green.svg" src="https://img.shields.io/badge/JAX-enabled-green.svg" />
+</a>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p><strong>bngmetric</strong> provides two complementary capabilities:</p>
+<ol class="arabic">
+<li><p><strong>Python Implementation of the BNG Metric</strong></p>
+<p>A straightforward, validated implementation of the UK’s Statutory Biodiversity Metric.
+Use it as a drop-in replacement for spreadsheet-based calculations, with the benefits
+of programmatic access, automation, and integration with existing data pipelines.</p>
+</li>
+<li><p><strong>JAX-Powered Advanced Analysis</strong></p>
+<p>Built on JAX, enabling gradient-based methods for sophisticated analyses that aren’t
+possible with traditional spreadsheet tools:</p>
+<ul class="simple">
+<li><p><strong>Sensitivity analysis</strong>: Compute gradients to understand how changes in area,
+condition, or habitat type affect biodiversity units</p></li>
+<li><p><strong>Uncertainty propagation</strong>: Propagate classification uncertainty (e.g., from
+remote sensing or ecologist assessments) through the metric using probabilistic methods</p></li>
+<li><p><strong>Optimisation</strong>: Find optimal habitat creation/enhancement strategies subject to constraints</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>bngmetric
+</pre></div>
+</div>
+<p>Or install from source:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/pdh21/bngmetric.git
+<span class="nb">cd</span><span class="w"> </span>bngmetric
+pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
+</pre></div>
+</div>
+</section>
+<section id="quick-start">
+<h2>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading"></a></h2>
+<section id="basic-usage">
+<h3>Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading"></a></h3>
+<p>Calculate biodiversity units for a habitat parcel:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bngmetric.core_calculations</span><span class="w"> </span><span class="kn">import</span> <span class="n">calculate_bng_from_dataframe</span>
+
+<span class="c1"># Define baseline habitats</span>
+<span class="n">baseline</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s1">&#39;Habitat&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Grassland - Lowland meadows&#39;</span><span class="p">,</span> <span class="s1">&#39;Woodland - Lowland mixed deciduous woodland&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;Condition&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Moderate&#39;</span><span class="p">,</span> <span class="s1">&#39;Good&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;Area&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">2.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+    <span class="s1">&#39;Strategic_Significance&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">1.15</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
+<span class="p">})</span>
+
+<span class="c1"># Calculate baseline biodiversity units</span>
+<span class="n">units</span> <span class="o">=</span> <span class="n">calculate_bng_from_dataframe</span><span class="p">(</span><span class="n">baseline</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Baseline units: </span><span class="si">{</span><span class="n">units</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="habitat-creation">
+<h3>Habitat Creation<a class="headerlink" href="#habitat-creation" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">bngmetric.creation</span><span class="w"> </span><span class="kn">import</span> <span class="n">calculate_creation_bng_from_dataframe</span>
+
+<span class="c1"># Define habitat creation proposal</span>
+<span class="n">creation</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s1">&#39;Habitat&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Grassland - Lowland meadows&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;Condition&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Good&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;Area&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">3.0</span><span class="p">],</span>
+    <span class="s1">&#39;Strategic_Significance&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">1.15</span><span class="p">]</span>
+<span class="p">})</span>
+
+<span class="n">units</span> <span class="o">=</span> <span class="n">calculate_creation_bng_from_dataframe</span><span class="p">(</span><span class="n">creation</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Creation units: </span><span class="si">{</span><span class="n">units</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="off-site-with-spatial-risk">
+<h3>Off-site with Spatial Risk<a class="headerlink" href="#off-site-with-spatial-risk" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">bngmetric.creation</span><span class="w"> </span><span class="kn">import</span> <span class="n">calculate_offsite_creation_bng_from_dataframe</span>
+
+<span class="c1"># Off-site creation with spatial risk multiplier</span>
+<span class="n">offsite</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s1">&#39;Habitat&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Grassland - Lowland meadows&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;Condition&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Good&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;Area&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">3.0</span><span class="p">],</span>
+    <span class="s1">&#39;Strategic_Significance&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">1.15</span><span class="p">],</span>
+    <span class="s1">&#39;Spatial_Risk&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Neighbouring LPA/NCA&#39;</span><span class="p">]</span>  <span class="c1"># 0.75 multiplier</span>
+<span class="p">})</span>
+
+<span class="n">units</span> <span class="o">=</span> <span class="n">calculate_offsite_creation_bng_from_dataframe</span><span class="p">(</span><span class="n">offsite</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="contents">
+<h2>Contents<a class="headerlink" href="#contents" title="Link to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="usage/basic.html">Basic Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="usage/basic.html#understanding-the-bng-metric">Understanding the BNG Metric</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage/basic.html#calculating-baseline-units">Calculating Baseline Units</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage/basic.html#available-habitat-types">Available Habitat Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage/basic.html#condition-categories">Condition Categories</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage/basic.html#strategic-significance">Strategic Significance</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="usage/creation_enhancement.html">Habitat Creation &amp; Enhancement</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="usage/creation_enhancement.html#habitat-creation">Habitat Creation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage/creation_enhancement.html#habitat-enhancement">Habitat Enhancement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage/creation_enhancement.html#understanding-uplift">Understanding Uplift</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage/creation_enhancement.html#using-jax-arrays">Using JAX Arrays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage/creation_enhancement.html#disallowed-combinations">Disallowed Combinations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="usage/offsite.html">Off-site Compensation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="usage/offsite.html#spatial-risk-categories">Spatial Risk Categories</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage/offsite.html#off-site-creation">Off-site Creation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage/offsite.html#off-site-enhancement">Off-site Enhancement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage/offsite.html#using-jax-arrays">Using JAX Arrays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage/offsite.html#intertidal-habitats">Intertidal Habitats</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Advanced Analysis</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="advanced/sensitivity.html">Sensitivity Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="advanced/sensitivity.html#why-sensitivity-analysis">Why Sensitivity Analysis?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced/sensitivity.html#computing-gradients-with-jax">Computing Gradients with JAX</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced/sensitivity.html#interpreting-gradients">Interpreting Gradients</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced/sensitivity.html#sensitivity-to-strategic-significance">Sensitivity to Strategic Significance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced/sensitivity.html#value-and-gradient-together">Value and Gradient Together</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced/sensitivity.html#sensitivity-for-creation-enhancement">Sensitivity for Creation/Enhancement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced/sensitivity.html#jacobian-for-multiple-outputs">Jacobian for Multiple Outputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced/sensitivity.html#practical-applications">Practical Applications</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="advanced/uncertainty.html">Uncertainty Propagation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="advanced/uncertainty.html#sources-of-uncertainty">Sources of Uncertainty</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced/uncertainty.html#confusion-matrix-approach">Confusion Matrix Approach</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced/uncertainty.html#monte-carlo-propagation">Monte Carlo Propagation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced/uncertainty.html#vectorised-monte-carlo">Vectorised Monte Carlo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced/uncertainty.html#condition-uncertainty">Condition Uncertainty</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced/uncertainty.html#area-uncertainty">Area Uncertainty</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced/uncertainty.html#combined-uncertainty">Combined Uncertainty</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced/uncertainty.html#reporting-uncertainty">Reporting Uncertainty</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced/uncertainty.html#integration-with-numpyro">Integration with NumPyro</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api/core.html">Core Calculations API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/core.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/core.html#usage-examples">Usage Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/creation.html">Creation API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/creation.html#on-site-creation-functions">On-site Creation Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/creation.html#off-site-creation-functions">Off-site Creation Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/creation.html#dataframe-column-requirements">DataFrame Column Requirements</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/enhancement.html">Enhancement API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/enhancement.html#condition-enhancement-on-site">Condition Enhancement (On-site)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/enhancement.html#distinctiveness-enhancement">Distinctiveness Enhancement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/enhancement.html#off-site-enhancement">Off-site Enhancement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/enhancement.html#dataframe-column-requirements">DataFrame Column Requirements</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/constants.html">Constants API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/constants.html#habitat-mappings">Habitat Mappings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/constants.html#condition-mappings">Condition Mappings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/constants.html#creation-multipliers">Creation Multipliers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/constants.html#enhancement-multipliers">Enhancement Multipliers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/constants.html#spatial-risk-multipliers">Spatial Risk Multipliers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/constants.html#level-2-habitat-labels">Level 2 Habitat Labels</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/constants.html#usage-example">Usage Example</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="indices-and-tables">
+<h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="usage/basic.html" class="btn btn-neutral float-right" title="Basic Usage" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Peter Hurley.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

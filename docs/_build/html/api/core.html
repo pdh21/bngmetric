@@ -1,0 +1,236 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Core Calculations API &mdash; bngmetric 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Creation API" href="creation.html" />
+    <link rel="prev" title="Uncertainty Propagation" href="../advanced/uncertainty.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            bngmetric
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../usage/basic.html">Basic Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/creation_enhancement.html">Habitat Creation &amp; Enhancement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/offsite.html">Off-site Compensation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced Analysis</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../advanced/sensitivity.html">Sensitivity Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../advanced/uncertainty.html">Uncertainty Propagation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Core Calculations API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#functions">Functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#bngmetric.core_calculations.get_distinctiveness_value"><code class="docutils literal notranslate"><span class="pre">get_distinctiveness_value()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#bngmetric.core_calculations.get_condition_multiplier"><code class="docutils literal notranslate"><span class="pre">get_condition_multiplier()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#bngmetric.core_calculations.calculate_baseline_bng_unit"><code class="docutils literal notranslate"><span class="pre">calculate_baseline_bng_unit()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#bngmetric.core_calculations.calculate_batched_baseline_bng_units"><code class="docutils literal notranslate"><span class="pre">calculate_batched_baseline_bng_units()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#bngmetric.core_calculations.calculate_bng_from_dataframe"><code class="docutils literal notranslate"><span class="pre">calculate_bng_from_dataframe()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#bngmetric.core_calculations.calculate_total_bng_from_jax_arrays"><code class="docutils literal notranslate"><span class="pre">calculate_total_bng_from_jax_arrays()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#usage-examples">Usage Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#single-parcel-calculation">Single Parcel Calculation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#batched-calculation">Batched Calculation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dataframe-interface">DataFrame Interface</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="creation.html">Creation API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="enhancement.html">Enhancement API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="constants.html">Constants API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">bngmetric</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Core Calculations API</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/core.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="core-calculations-api">
+<h1>Core Calculations API<a class="headerlink" href="#core-calculations-api" title="Link to this heading"></a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">core_calculations</span></code> module provides functions for calculating baseline
+biodiversity units.</p>
+<section id="functions">
+<span id="module-bngmetric.core_calculations"></span><h2>Functions<a class="headerlink" href="#functions" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="bngmetric.core_calculations.get_distinctiveness_value">
+<span class="sig-prename descclassname"><span class="pre">bngmetric.core_calculations.</span></span><span class="sig-name descname"><span class="pre">get_distinctiveness_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">habitat_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../_modules/bngmetric/core_calculations.html#get_distinctiveness_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bngmetric.core_calculations.get_distinctiveness_value" title="Link to this definition"></a></dt>
+<dd><p>Retrieves distinctiveness value for a given habitat ID.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bngmetric.core_calculations.get_condition_multiplier">
+<span class="sig-prename descclassname"><span class="pre">bngmetric.core_calculations.</span></span><span class="sig-name descname"><span class="pre">get_condition_multiplier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">habitat_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../_modules/bngmetric/core_calculations.html#get_condition_multiplier"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bngmetric.core_calculations.get_condition_multiplier" title="Link to this definition"></a></dt>
+<dd><p>Retrieves condition multiplier for a given habitat ID (row) and condition ID (column)
+from the pre-loaded matrix.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bngmetric.core_calculations.calculate_baseline_bng_unit">
+<span class="sig-prename descclassname"><span class="pre">bngmetric.core_calculations.</span></span><span class="sig-name descname"><span class="pre">calculate_baseline_bng_unit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">habitat_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">area</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">strategic_multiplier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../_modules/bngmetric/core_calculations.html#calculate_baseline_bng_unit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bngmetric.core_calculations.calculate_baseline_bng_unit" title="Link to this definition"></a></dt>
+<dd><p>Calculates the baseline biodiversity units for a single habitat parcel.
+Uses habitat-specific condition multipliers.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bngmetric.core_calculations.calculate_batched_baseline_bng_units">
+<span class="sig-prename descclassname"><span class="pre">bngmetric.core_calculations.</span></span><span class="sig-name descname"><span class="pre">calculate_batched_baseline_bng_units</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">habitat_ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.jax.dev/en/latest/_autosummary/jax.Array.html#jax.Array" title="(in JAX)"><span class="pre">Array</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition_ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.jax.dev/en/latest/_autosummary/jax.Array.html#jax.Array" title="(in JAX)"><span class="pre">Array</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">areas</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.jax.dev/en/latest/_autosummary/jax.Array.html#jax.Array" title="(in JAX)"><span class="pre">Array</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">strategic_multipliers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.jax.dev/en/latest/_autosummary/jax.Array.html#jax.Array" title="(in JAX)"><span class="pre">Array</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.jax.dev/en/latest/_autosummary/jax.Array.html#jax.Array" title="(in JAX)"><span class="pre">Array</span></a></span></span><a class="reference internal" href="../_modules/bngmetric/core_calculations.html#calculate_batched_baseline_bng_units"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bngmetric.core_calculations.calculate_batched_baseline_bng_units" title="Link to this definition"></a></dt>
+<dd><p>Vectorized version of calculate_batched_baseline_bng_units. Takes similar arguments as calculate_batched_baseline_bng_units but with additional array axes over which calculate_batched_baseline_bng_units is mapped.</p>
+<p>Original documentation:</p>
+<blockquote>
+<div><p>Calculates baseline biodiversity units for multiple habitat parcels in a batch.
+Inputs should be JAX arrays of the same length.</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bngmetric.core_calculations.calculate_bng_from_dataframe">
+<span class="sig-prename descclassname"><span class="pre">bngmetric.core_calculations.</span></span><span class="sig-name descname"><span class="pre">calculate_bng_from_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v2.3.3)"><span class="pre">DataFrame</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../_modules/bngmetric/core_calculations.html#calculate_bng_from_dataframe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bngmetric.core_calculations.calculate_bng_from_dataframe" title="Link to this definition"></a></dt>
+<dd><p>Calculates total baseline biodiversity units from a pandas DataFrame.
+Automatically maps string inputs to JAX-compatible numerical IDs.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bngmetric.core_calculations.calculate_total_bng_from_jax_arrays">
+<span class="sig-prename descclassname"><span class="pre">bngmetric.core_calculations.</span></span><span class="sig-name descname"><span class="pre">calculate_total_bng_from_jax_arrays</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">habitat_ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.jax.dev/en/latest/_autosummary/jax.Array.html#jax.Array" title="(in JAX)"><span class="pre">Array</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition_ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.jax.dev/en/latest/_autosummary/jax.Array.html#jax.Array" title="(in JAX)"><span class="pre">Array</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">areas</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.jax.dev/en/latest/_autosummary/jax.Array.html#jax.Array" title="(in JAX)"><span class="pre">Array</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">strategic_multipliers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.jax.dev/en/latest/_autosummary/jax.Array.html#jax.Array" title="(in JAX)"><span class="pre">Array</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></span></span><a class="reference internal" href="../_modules/bngmetric/core_calculations.html#calculate_total_bng_from_jax_arrays"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bngmetric.core_calculations.calculate_total_bng_from_jax_arrays" title="Link to this definition"></a></dt>
+<dd><p>Calculates the sum of baseline biodiversity units from JAX arrays.
+This is the function we’ll differentiate.</p>
+</dd></dl>
+
+</section>
+<section id="usage-examples">
+<h2>Usage Examples<a class="headerlink" href="#usage-examples" title="Link to this heading"></a></h2>
+<section id="single-parcel-calculation">
+<h3>Single Parcel Calculation<a class="headerlink" href="#single-parcel-calculation" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">bngmetric.core_calculations</span><span class="w"> </span><span class="kn">import</span> <span class="n">calculate_baseline_bng_unit</span>
+
+<span class="n">units</span> <span class="o">=</span> <span class="n">calculate_baseline_bng_unit</span><span class="p">(</span>
+    <span class="n">habitat_id</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">condition_id</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">area</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span>
+    <span class="n">strategic_multiplier</span><span class="o">=</span><span class="mf">1.15</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="batched-calculation">
+<h3>Batched Calculation<a class="headerlink" href="#batched-calculation" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">jax.numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">jnp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bngmetric.core_calculations</span><span class="w"> </span><span class="kn">import</span> <span class="n">calculate_batched_baseline_bng_units</span>
+
+<span class="n">units</span> <span class="o">=</span> <span class="n">calculate_batched_baseline_bng_units</span><span class="p">(</span>
+    <span class="n">habitat_ids</span><span class="o">=</span><span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]),</span>
+    <span class="n">condition_ids</span><span class="o">=</span><span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">]),</span>
+    <span class="n">areas</span><span class="o">=</span><span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]),</span>
+    <span class="n">strategic_multipliers</span><span class="o">=</span><span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.15</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">])</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="dataframe-interface">
+<h3>DataFrame Interface<a class="headerlink" href="#dataframe-interface" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bngmetric.core_calculations</span><span class="w"> </span><span class="kn">import</span> <span class="n">calculate_bng_from_dataframe</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s1">&#39;Habitat&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Grassland - Lowland meadows&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;Condition&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Good&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;Area&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">2.0</span><span class="p">],</span>
+    <span class="s1">&#39;Strategic_Significance&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">1.15</span><span class="p">]</span>
+<span class="p">})</span>
+
+<span class="n">total</span> <span class="o">=</span> <span class="n">calculate_bng_from_dataframe</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../advanced/uncertainty.html" class="btn btn-neutral float-left" title="Uncertainty Propagation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="creation.html" class="btn btn-neutral float-right" title="Creation API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Peter Hurley.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

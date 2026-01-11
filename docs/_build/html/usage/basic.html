@@ -1,0 +1,247 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Basic Usage &mdash; bngmetric 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Habitat Creation &amp; Enhancement" href="creation_enhancement.html" />
+    <link rel="prev" title="bngmetric" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            bngmetric
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Basic Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#understanding-the-bng-metric">Understanding the BNG Metric</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#calculating-baseline-units">Calculating Baseline Units</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#using-dataframes">Using DataFrames</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#using-jax-arrays-directly">Using JAX Arrays Directly</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#available-habitat-types">Available Habitat Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#condition-categories">Condition Categories</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#strategic-significance">Strategic Significance</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="creation_enhancement.html">Habitat Creation &amp; Enhancement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="offsite.html">Off-site Compensation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced Analysis</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../advanced/sensitivity.html">Sensitivity Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../advanced/uncertainty.html">Uncertainty Propagation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/core.html">Core Calculations API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/creation.html">Creation API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/enhancement.html">Enhancement API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/constants.html">Constants API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">bngmetric</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Basic Usage</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/usage/basic.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="basic-usage">
+<h1>Basic Usage<a class="headerlink" href="#basic-usage" title="Link to this heading"></a></h1>
+<p>This guide covers the fundamental operations for calculating biodiversity units
+using bngmetric.</p>
+<section id="understanding-the-bng-metric">
+<h2>Understanding the BNG Metric<a class="headerlink" href="#understanding-the-bng-metric" title="Link to this heading"></a></h2>
+<p>The Biodiversity Net Gain metric calculates biodiversity value in standardised
+“biodiversity units”. The core formula is:</p>
+<div class="math notranslate nohighlight">
+\[\text{Units} = \text{Area} \times \text{Distinctiveness} \times \text{Condition} \times \text{Strategic Significance}\]</div>
+<p>Where:</p>
+<ul class="simple">
+<li><p><strong>Area</strong>: Size in hectares</p></li>
+<li><p><strong>Distinctiveness</strong>: Ecological value of the habitat type (V.Low to V.High)</p></li>
+<li><p><strong>Condition</strong>: Current health/quality of the habitat (Poor to Good)</p></li>
+<li><p><strong>Strategic Significance</strong>: Alignment with local biodiversity priorities</p></li>
+</ul>
+</section>
+<section id="calculating-baseline-units">
+<h2>Calculating Baseline Units<a class="headerlink" href="#calculating-baseline-units" title="Link to this heading"></a></h2>
+<p>The first step in any BNG assessment is calculating the baseline biodiversity
+value of the site before development.</p>
+<section id="using-dataframes">
+<h3>Using DataFrames<a class="headerlink" href="#using-dataframes" title="Link to this heading"></a></h3>
+<p>The simplest approach is to use pandas DataFrames:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bngmetric.core_calculations</span><span class="w"> </span><span class="kn">import</span> <span class="n">calculate_bng_from_dataframe</span>
+
+<span class="c1"># Define your baseline habitats</span>
+<span class="n">baseline</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s1">&#39;Habitat&#39;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s1">&#39;Grassland - Lowland meadows&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Woodland - Lowland mixed deciduous woodland&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Heathland and shrub - Lowland heathland&#39;</span>
+    <span class="p">],</span>
+    <span class="s1">&#39;Condition&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Moderate&#39;</span><span class="p">,</span> <span class="s1">&#39;Good&#39;</span><span class="p">,</span> <span class="s1">&#39;Poor&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;Area&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">2.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span>
+    <span class="s1">&#39;Strategic_Significance&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">1.15</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">]</span>
+<span class="p">})</span>
+
+<span class="n">total_units</span> <span class="o">=</span> <span class="n">calculate_bng_from_dataframe</span><span class="p">(</span><span class="n">baseline</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total baseline units: </span><span class="si">{</span><span class="n">total_units</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="using-jax-arrays-directly">
+<h3>Using JAX Arrays Directly<a class="headerlink" href="#using-jax-arrays-directly" title="Link to this heading"></a></h3>
+<p>For performance or when integrating with JAX workflows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">jax.numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">jnp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bngmetric.core_calculations</span><span class="w"> </span><span class="kn">import</span> <span class="n">calculate_batched_baseline_bng_units</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bngmetric.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">HABITAT_TYPE_TO_ID</span><span class="p">,</span> <span class="n">CONDITION_CATEGORY_TO_ID</span>
+
+<span class="c1"># Convert to numerical IDs</span>
+<span class="n">habitat_ids</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+    <span class="n">HABITAT_TYPE_TO_ID</span><span class="p">[</span><span class="s1">&#39;Grassland - Lowland meadows&#39;</span><span class="p">],</span>
+    <span class="n">HABITAT_TYPE_TO_ID</span><span class="p">[</span><span class="s1">&#39;Woodland - Lowland mixed deciduous woodland&#39;</span><span class="p">]</span>
+<span class="p">])</span>
+<span class="n">condition_ids</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+    <span class="n">CONDITION_CATEGORY_TO_ID</span><span class="p">[</span><span class="s1">&#39;Moderate&#39;</span><span class="p">],</span>
+    <span class="n">CONDITION_CATEGORY_TO_ID</span><span class="p">[</span><span class="s1">&#39;Good&#39;</span><span class="p">]</span>
+<span class="p">])</span>
+<span class="n">areas</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">2.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+<span class="n">strategic</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.15</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+
+<span class="c1"># Calculate units for each parcel</span>
+<span class="n">parcel_units</span> <span class="o">=</span> <span class="n">calculate_batched_baseline_bng_units</span><span class="p">(</span>
+    <span class="n">habitat_ids</span><span class="p">,</span> <span class="n">condition_ids</span><span class="p">,</span> <span class="n">areas</span><span class="p">,</span> <span class="n">strategic</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Per-parcel units: </span><span class="si">{</span><span class="n">parcel_units</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total: </span><span class="si">{</span><span class="n">jnp</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">parcel_units</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="available-habitat-types">
+<h2>Available Habitat Types<a class="headerlink" href="#available-habitat-types" title="Link to this heading"></a></h2>
+<p>bngmetric includes all habitat types from the UK Habitat Classification:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">bngmetric.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">HABITAT_TYPE_TO_ID</span>
+
+<span class="c1"># List all available habitats</span>
+<span class="k">for</span> <span class="n">habitat</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">HABITAT_TYPE_TO_ID</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">habitat</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="condition-categories">
+<h2>Condition Categories<a class="headerlink" href="#condition-categories" title="Link to this heading"></a></h2>
+<p>The following condition categories are available:</p>
+<ul class="simple">
+<li><p>Good</p></li>
+<li><p>Fairly Good</p></li>
+<li><p>Moderate</p></li>
+<li><p>Fairly Poor</p></li>
+<li><p>Poor</p></li>
+<li><p>Condition Assessment N/A</p></li>
+<li><p>N/A - Other</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">bngmetric.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">CONDITION_CATEGORY_TO_ID</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">CONDITION_CATEGORY_TO_ID</span><span class="p">)</span>
+<span class="c1"># {&#39;Good&#39;: 0, &#39;Fairly Good&#39;: 1, &#39;Moderate&#39;: 2, ...}</span>
+</pre></div>
+</div>
+</section>
+<section id="strategic-significance">
+<h2>Strategic Significance<a class="headerlink" href="#strategic-significance" title="Link to this heading"></a></h2>
+<p>Strategic significance multipliers reflect alignment with local biodiversity
+strategies:</p>
+<ul class="simple">
+<li><p><strong>1.15</strong>: High strategic significance (formally identified in local strategy)</p></li>
+<li><p><strong>1.10</strong>: Medium strategic significance (ecologically desirable location)</p></li>
+<li><p><strong>1.00</strong>: Low strategic significance (not in local strategy)</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../index.html" class="btn btn-neutral float-left" title="bngmetric" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="creation_enhancement.html" class="btn btn-neutral float-right" title="Habitat Creation &amp; Enhancement" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Peter Hurley.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

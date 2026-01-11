@@ -1,0 +1,227 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>bngmetric.core_calculations &mdash; bngmetric 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            bngmetric
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/basic.html">Basic Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/creation_enhancement.html">Habitat Creation &amp; Enhancement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage/offsite.html">Off-site Compensation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced Analysis</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../advanced/sensitivity.html">Sensitivity Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../advanced/uncertainty.html">Uncertainty Propagation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api/core.html">Core Calculations API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/creation.html">Creation API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/enhancement.html">Enhancement API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/constants.html">Constants API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">bngmetric</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">bngmetric.core_calculations</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for bngmetric.core_calculations</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">jax</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jax.numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">jnp</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">jax</span><span class="w"> </span><span class="kn">import</span> <span class="n">jit</span><span class="p">,</span> <span class="n">vmap</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.constants</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">HABITAT_TYPE_TO_ID</span><span class="p">,</span> <span class="c1"># Master mapping for distinctiveness and condition matrix rows</span>
+    <span class="n">ID_TO_DISTINCTIVENESS_VALUE</span><span class="p">,</span>
+    <span class="n">CONDITION_CATEGORY_TO_ID</span><span class="p">,</span>
+    <span class="n">CONDITION_MULTIPLIERS_MATRIX</span> <span class="c1"># The 2D JAX array, already ordered correctly</span>
+<span class="p">)</span>
+
+<div class="viewcode-block" id="get_distinctiveness_value">
+<a class="viewcode-back" href="../../api/core.html#bngmetric.core_calculations.get_distinctiveness_value">[docs]</a>
+<span class="nd">@jit</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_distinctiveness_value</span><span class="p">(</span><span class="n">habitat_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Retrieves distinctiveness value for a given habitat ID.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">ID_TO_DISTINCTIVENESS_VALUE</span><span class="p">[</span><span class="n">habitat_id</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="get_condition_multiplier">
+<a class="viewcode-back" href="../../api/core.html#bngmetric.core_calculations.get_condition_multiplier">[docs]</a>
+<span class="nd">@jit</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_condition_multiplier</span><span class="p">(</span><span class="n">habitat_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">condition_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retrieves condition multiplier for a given habitat ID (row) and condition ID (column)</span>
+<span class="sd">    from the pre-loaded matrix.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Direct indexing into the 2D matrix, which is now guaranteed to be ordered by habitat_id</span>
+    <span class="k">return</span> <span class="n">CONDITION_MULTIPLIERS_MATRIX</span><span class="p">[</span><span class="n">habitat_id</span><span class="p">,</span> <span class="n">condition_id</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="calculate_baseline_bng_unit">
+<a class="viewcode-back" href="../../api/core.html#bngmetric.core_calculations.calculate_baseline_bng_unit">[docs]</a>
+<span class="nd">@jit</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">calculate_baseline_bng_unit</span><span class="p">(</span>
+    <span class="n">habitat_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>       <span class="c1"># Master numerical ID for habitat type</span>
+    <span class="n">condition_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>     <span class="c1"># Numerical ID for condition category</span>
+    <span class="n">area</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>           <span class="c1"># Area in hectares</span>
+    <span class="n">strategic_multiplier</span><span class="p">:</span> <span class="nb">float</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculates the baseline biodiversity units for a single habitat parcel.</span>
+<span class="sd">    Uses habitat-specific condition multipliers.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">distinctiveness</span> <span class="o">=</span> <span class="n">get_distinctiveness_value</span><span class="p">(</span><span class="n">habitat_id</span><span class="p">)</span>
+    <span class="n">condition_m</span> <span class="o">=</span> <span class="n">get_condition_multiplier</span><span class="p">(</span><span class="n">habitat_id</span><span class="p">,</span> <span class="n">condition_id</span><span class="p">)</span>
+
+    <span class="n">units</span> <span class="o">=</span> <span class="n">area</span> <span class="o">*</span> <span class="n">distinctiveness</span> <span class="o">*</span> <span class="n">condition_m</span> <span class="o">*</span> <span class="n">strategic_multiplier</span>
+    <span class="k">return</span> <span class="n">units</span></div>
+
+
+<div class="viewcode-block" id="calculate_batched_baseline_bng_units">
+<a class="viewcode-back" href="../../api/core.html#bngmetric.core_calculations.calculate_batched_baseline_bng_units">[docs]</a>
+<span class="nd">@jit</span>
+<span class="nd">@vmap</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">calculate_batched_baseline_bng_units</span><span class="p">(</span>
+    <span class="n">habitat_ids</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="n">condition_ids</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="n">areas</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="n">strategic_multipliers</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculates baseline biodiversity units for multiple habitat parcels in a batch.</span>
+<span class="sd">    Inputs should be JAX arrays of the same length.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># vmap correctly applies habitat_ids to both get_distinctiveness_value and get_condition_multiplier</span>
+    <span class="k">return</span> <span class="n">calculate_baseline_bng_unit</span><span class="p">(</span>
+        <span class="n">habitat_ids</span><span class="p">,</span> <span class="n">condition_ids</span><span class="p">,</span> <span class="n">areas</span><span class="p">,</span> <span class="n">strategic_multipliers</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="calculate_bng_from_dataframe">
+<a class="viewcode-back" href="../../api/core.html#bngmetric.core_calculations.calculate_bng_from_dataframe">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">calculate_bng_from_dataframe</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculates total baseline biodiversity units from a pandas DataFrame.</span>
+<span class="sd">    Automatically maps string inputs to JAX-compatible numerical IDs.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Convert string columns to numerical IDs using the master mappings</span>
+    <span class="n">habitat_ids</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">HABITAT_TYPE_TO_ID</span><span class="p">[</span><span class="n">ht</span><span class="p">]</span> <span class="k">for</span> <span class="n">ht</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Habitat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">])</span>
+    <span class="n">condition_ids</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">CONDITION_CATEGORY_TO_ID</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;Condition&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">])</span>
+
+    <span class="n">areas</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Area&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+    <span class="n">strategic_multipliers</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;Strategic_Significance&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+
+    <span class="n">parcel_units</span> <span class="o">=</span> <span class="n">calculate_batched_baseline_bng_units</span><span class="p">(</span>
+        <span class="n">habitat_ids</span><span class="p">,</span> <span class="n">condition_ids</span><span class="p">,</span> <span class="n">areas</span><span class="p">,</span> <span class="n">strategic_multipliers</span>
+    <span class="p">)</span>
+    
+    <span class="n">total_bng</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">parcel_units</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">total_bng</span><span class="p">)</span></div>
+
+
+<span class="c1"># New utility function in core_calculations.py for overall BNG sum from JAX arrays</span>
+<div class="viewcode-block" id="calculate_total_bng_from_jax_arrays">
+<a class="viewcode-back" href="../../api/core.html#bngmetric.core_calculations.calculate_total_bng_from_jax_arrays">[docs]</a>
+<span class="nd">@jit</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">calculate_total_bng_from_jax_arrays</span><span class="p">(</span>
+    <span class="n">habitat_ids</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="n">condition_ids</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="n">areas</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="n">strategic_multipliers</span><span class="p">:</span> <span class="n">jax</span><span class="o">.</span><span class="n">Array</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculates the sum of baseline biodiversity units from JAX arrays.</span>
+<span class="sd">    This is the function we&#39;ll differentiate.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">parcel_units</span> <span class="o">=</span> <span class="n">calculate_batched_baseline_bng_units</span><span class="p">(</span>
+        <span class="n">habitat_ids</span><span class="p">,</span> <span class="n">condition_ids</span><span class="p">,</span> <span class="n">areas</span><span class="p">,</span> <span class="n">strategic_multipliers</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">parcel_units</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Peter Hurley.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

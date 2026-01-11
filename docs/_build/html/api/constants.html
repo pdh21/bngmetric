@@ -1,0 +1,319 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Constants API &mdash; bngmetric 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Enhancement API" href="enhancement.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            bngmetric
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../usage/basic.html">Basic Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/creation_enhancement.html">Habitat Creation &amp; Enhancement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/offsite.html">Off-site Compensation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced Analysis</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../advanced/sensitivity.html">Sensitivity Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../advanced/uncertainty.html">Uncertainty Propagation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="core.html">Core Calculations API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="creation.html">Creation API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="enhancement.html">Enhancement API</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Constants API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#habitat-mappings">Habitat Mappings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#bngmetric.constants.HABITAT_TYPE_TO_ID"><code class="docutils literal notranslate"><span class="pre">HABITAT_TYPE_TO_ID</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#bngmetric.constants.HABITAT_DISTINCTIVENESS_MAP"><code class="docutils literal notranslate"><span class="pre">HABITAT_DISTINCTIVENESS_MAP</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#bngmetric.constants.ID_TO_DISTINCTIVENESS_VALUE"><code class="docutils literal notranslate"><span class="pre">ID_TO_DISTINCTIVENESS_VALUE</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#condition-mappings">Condition Mappings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#bngmetric.constants.CONDITION_CATEGORY_TO_ID"><code class="docutils literal notranslate"><span class="pre">CONDITION_CATEGORY_TO_ID</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#bngmetric.constants.CONDITION_MULTIPLIERS_MATRIX"><code class="docutils literal notranslate"><span class="pre">CONDITION_MULTIPLIERS_MATRIX</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#creation-multipliers">Creation Multipliers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#bngmetric.constants.CREATION_MULTIPLIERS_MATRIX"><code class="docutils literal notranslate"><span class="pre">CREATION_MULTIPLIERS_MATRIX</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#bngmetric.constants.CREATION_RISK"><code class="docutils literal notranslate"><span class="pre">CREATION_RISK</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#bngmetric.constants.TEMPORAL_MULTIPLIER_LOOKUP"><code class="docutils literal notranslate"><span class="pre">TEMPORAL_MULTIPLIER_LOOKUP</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#enhancement-multipliers">Enhancement Multipliers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#bngmetric.constants.CONDITION_ENHANCEMENT_TEMPORAL"><code class="docutils literal notranslate"><span class="pre">CONDITION_ENHANCEMENT_TEMPORAL</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#bngmetric.constants.DISTINCTIVENESS_ENHANCEMENT_TEMPORAL"><code class="docutils literal notranslate"><span class="pre">DISTINCTIVENESS_ENHANCEMENT_TEMPORAL</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#bngmetric.constants.ENHANCEMENT_RISK"><code class="docutils literal notranslate"><span class="pre">ENHANCEMENT_RISK</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#spatial-risk-multipliers">Spatial Risk Multipliers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#bngmetric.constants.SPATIAL_RISK_CATEGORY_TO_ID"><code class="docutils literal notranslate"><span class="pre">SPATIAL_RISK_CATEGORY_TO_ID</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#bngmetric.constants.SPATIAL_RISK_MULTIPLIERS"><code class="docutils literal notranslate"><span class="pre">SPATIAL_RISK_MULTIPLIERS</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#level-2-habitat-labels">Level 2 Habitat Labels</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#bngmetric.constants.HABITAT_TO_LEVEL2"><code class="docutils literal notranslate"><span class="pre">HABITAT_TO_LEVEL2</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#bngmetric.constants.LEVEL2_TO_ID"><code class="docutils literal notranslate"><span class="pre">LEVEL2_TO_ID</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#usage-example">Usage Example</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">bngmetric</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Constants API</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/constants.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="constants-api">
+<h1>Constants API<a class="headerlink" href="#constants-api" title="Link to this heading"></a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">constants</span></code> module provides lookup tables and mappings loaded from
+the official BNG metric data files.</p>
+<section id="habitat-mappings">
+<span id="module-bngmetric.constants"></span><h2>Habitat Mappings<a class="headerlink" href="#habitat-mappings" title="Link to this heading"></a></h2>
+<dl class="py data">
+<dt class="sig sig-object py" id="bngmetric.constants.HABITAT_TYPE_TO_ID">
+<span class="sig-prename descclassname"><span class="pre">bngmetric.constants.</span></span><span class="sig-name descname"><span class="pre">HABITAT_TYPE_TO_ID</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#bngmetric.constants.HABITAT_TYPE_TO_ID" title="Link to this definition"></a></dt>
+<dd><p>Maps habitat type names to unique integer IDs for JAX array indexing.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">bngmetric.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">HABITAT_TYPE_TO_ID</span>
+
+<span class="n">habitat_id</span> <span class="o">=</span> <span class="n">HABITAT_TYPE_TO_ID</span><span class="p">[</span><span class="s1">&#39;Grassland - Lowland meadows&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="bngmetric.constants.HABITAT_DISTINCTIVENESS_MAP">
+<span class="sig-prename descclassname"><span class="pre">bngmetric.constants.</span></span><span class="sig-name descname"><span class="pre">HABITAT_DISTINCTIVENESS_MAP</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#bngmetric.constants.HABITAT_DISTINCTIVENESS_MAP" title="Link to this definition"></a></dt>
+<dd><p>Maps habitat type names to their distinctiveness scores.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="bngmetric.constants.ID_TO_DISTINCTIVENESS_VALUE">
+<span class="sig-prename descclassname"><span class="pre">bngmetric.constants.</span></span><span class="sig-name descname"><span class="pre">ID_TO_DISTINCTIVENESS_VALUE</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.jax.dev/en/latest/_autosummary/jax.Array.html#jax.Array" title="(in JAX)"><span class="pre">jax.Array</span></a></em><a class="headerlink" href="#bngmetric.constants.ID_TO_DISTINCTIVENESS_VALUE" title="Link to this definition"></a></dt>
+<dd><p>JAX array of distinctiveness values indexed by habitat ID.</p>
+</dd></dl>
+
+</section>
+<section id="condition-mappings">
+<h2>Condition Mappings<a class="headerlink" href="#condition-mappings" title="Link to this heading"></a></h2>
+<dl class="py data">
+<dt class="sig sig-object py" id="bngmetric.constants.CONDITION_CATEGORY_TO_ID">
+<span class="sig-prename descclassname"><span class="pre">bngmetric.constants.</span></span><span class="sig-name descname"><span class="pre">CONDITION_CATEGORY_TO_ID</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#bngmetric.constants.CONDITION_CATEGORY_TO_ID" title="Link to this definition"></a></dt>
+<dd><p>Maps condition category names to integer IDs.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">bngmetric.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">CONDITION_CATEGORY_TO_ID</span>
+
+<span class="n">condition_id</span> <span class="o">=</span> <span class="n">CONDITION_CATEGORY_TO_ID</span><span class="p">[</span><span class="s1">&#39;Good&#39;</span><span class="p">]</span>  <span class="c1"># Returns 0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="bngmetric.constants.CONDITION_MULTIPLIERS_MATRIX">
+<span class="sig-prename descclassname"><span class="pre">bngmetric.constants.</span></span><span class="sig-name descname"><span class="pre">CONDITION_MULTIPLIERS_MATRIX</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.jax.dev/en/latest/_autosummary/jax.Array.html#jax.Array" title="(in JAX)"><span class="pre">jax.Array</span></a></em><a class="headerlink" href="#bngmetric.constants.CONDITION_MULTIPLIERS_MATRIX" title="Link to this definition"></a></dt>
+<dd><p>2D JAX array of condition multipliers.
+Shape: <code class="docutils literal notranslate"><span class="pre">(n_habitats,</span> <span class="pre">n_conditions)</span></code></p>
+<p>Usage:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">multiplier</span> <span class="o">=</span> <span class="n">CONDITION_MULTIPLIERS_MATRIX</span><span class="p">[</span><span class="n">habitat_id</span><span class="p">,</span> <span class="n">condition_id</span><span class="p">]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+<section id="creation-multipliers">
+<h2>Creation Multipliers<a class="headerlink" href="#creation-multipliers" title="Link to this heading"></a></h2>
+<dl class="py data">
+<dt class="sig sig-object py" id="bngmetric.constants.CREATION_MULTIPLIERS_MATRIX">
+<span class="sig-prename descclassname"><span class="pre">bngmetric.constants.</span></span><span class="sig-name descname"><span class="pre">CREATION_MULTIPLIERS_MATRIX</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.jax.dev/en/latest/_autosummary/jax.Array.html#jax.Array" title="(in JAX)"><span class="pre">jax.Array</span></a></em><a class="headerlink" href="#bngmetric.constants.CREATION_MULTIPLIERS_MATRIX" title="Link to this definition"></a></dt>
+<dd><p>2D JAX array of time-to-target years for habitat creation.
+Shape: <code class="docutils literal notranslate"><span class="pre">(n_habitats,</span> <span class="pre">n_conditions)</span></code>
+NaN values indicate disallowed combinations.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="bngmetric.constants.CREATION_RISK">
+<span class="sig-prename descclassname"><span class="pre">bngmetric.constants.</span></span><span class="sig-name descname"><span class="pre">CREATION_RISK</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.jax.dev/en/latest/_autosummary/jax.Array.html#jax.Array" title="(in JAX)"><span class="pre">jax.Array</span></a></em><a class="headerlink" href="#bngmetric.constants.CREATION_RISK" title="Link to this definition"></a></dt>
+<dd><p>1D JAX array of difficulty multipliers for habitat creation.
+Indexed by habitat ID.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="bngmetric.constants.TEMPORAL_MULTIPLIER_LOOKUP">
+<span class="sig-prename descclassname"><span class="pre">bngmetric.constants.</span></span><span class="sig-name descname"><span class="pre">TEMPORAL_MULTIPLIER_LOOKUP</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.jax.dev/en/latest/_autosummary/jax.Array.html#jax.Array" title="(in JAX)"><span class="pre">jax.Array</span></a></em><a class="headerlink" href="#bngmetric.constants.TEMPORAL_MULTIPLIER_LOOKUP" title="Link to this definition"></a></dt>
+<dd><p>1D JAX array converting years to temporal multipliers.
+Index by year to get the multiplier.</p>
+</dd></dl>
+
+</section>
+<section id="enhancement-multipliers">
+<h2>Enhancement Multipliers<a class="headerlink" href="#enhancement-multipliers" title="Link to this heading"></a></h2>
+<dl class="py data">
+<dt class="sig sig-object py" id="bngmetric.constants.CONDITION_ENHANCEMENT_TEMPORAL">
+<span class="sig-prename descclassname"><span class="pre">bngmetric.constants.</span></span><span class="sig-name descname"><span class="pre">CONDITION_ENHANCEMENT_TEMPORAL</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.jax.dev/en/latest/_autosummary/jax.Array.html#jax.Array" title="(in JAX)"><span class="pre">jax.Array</span></a></em><a class="headerlink" href="#bngmetric.constants.CONDITION_ENHANCEMENT_TEMPORAL" title="Link to this definition"></a></dt>
+<dd><p>3D JAX array of years for condition enhancement.
+Shape: <code class="docutils literal notranslate"><span class="pre">(n_habitats,</span> <span class="pre">n_conditions,</span> <span class="pre">n_conditions)</span></code>
+Index: <code class="docutils literal notranslate"><span class="pre">[habitat_id,</span> <span class="pre">start_condition_id,</span> <span class="pre">target_condition_id]</span></code></p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="bngmetric.constants.DISTINCTIVENESS_ENHANCEMENT_TEMPORAL">
+<span class="sig-prename descclassname"><span class="pre">bngmetric.constants.</span></span><span class="sig-name descname"><span class="pre">DISTINCTIVENESS_ENHANCEMENT_TEMPORAL</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.jax.dev/en/latest/_autosummary/jax.Array.html#jax.Array" title="(in JAX)"><span class="pre">jax.Array</span></a></em><a class="headerlink" href="#bngmetric.constants.DISTINCTIVENESS_ENHANCEMENT_TEMPORAL" title="Link to this definition"></a></dt>
+<dd><p>2D JAX array of years for distinctiveness enhancement.
+Shape: <code class="docutils literal notranslate"><span class="pre">(n_habitats,</span> <span class="pre">n_condition_transitions)</span></code></p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="bngmetric.constants.ENHANCEMENT_RISK">
+<span class="sig-prename descclassname"><span class="pre">bngmetric.constants.</span></span><span class="sig-name descname"><span class="pre">ENHANCEMENT_RISK</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.jax.dev/en/latest/_autosummary/jax.Array.html#jax.Array" title="(in JAX)"><span class="pre">jax.Array</span></a></em><a class="headerlink" href="#bngmetric.constants.ENHANCEMENT_RISK" title="Link to this definition"></a></dt>
+<dd><p>1D JAX array of difficulty multipliers for enhancement.
+Indexed by habitat ID.</p>
+</dd></dl>
+
+</section>
+<section id="spatial-risk-multipliers">
+<h2>Spatial Risk Multipliers<a class="headerlink" href="#spatial-risk-multipliers" title="Link to this heading"></a></h2>
+<dl class="py data">
+<dt class="sig sig-object py" id="bngmetric.constants.SPATIAL_RISK_CATEGORY_TO_ID">
+<span class="sig-prename descclassname"><span class="pre">bngmetric.constants.</span></span><span class="sig-name descname"><span class="pre">SPATIAL_RISK_CATEGORY_TO_ID</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#bngmetric.constants.SPATIAL_RISK_CATEGORY_TO_ID" title="Link to this definition"></a></dt>
+<dd><p>Maps spatial risk category names to integer IDs.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">SPATIAL_RISK_CATEGORY_TO_ID</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;Inside LPA/NCA&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;Neighbouring LPA/NCA&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s1">&#39;Beyond neighbouring LPA/NCA&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="bngmetric.constants.SPATIAL_RISK_MULTIPLIERS">
+<span class="sig-prename descclassname"><span class="pre">bngmetric.constants.</span></span><span class="sig-name descname"><span class="pre">SPATIAL_RISK_MULTIPLIERS</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.jax.dev/en/latest/_autosummary/jax.Array.html#jax.Array" title="(in JAX)"><span class="pre">jax.Array</span></a></em><a class="headerlink" href="#bngmetric.constants.SPATIAL_RISK_MULTIPLIERS" title="Link to this definition"></a></dt>
+<dd><p>JAX array of spatial risk multipliers: <code class="docutils literal notranslate"><span class="pre">[1.0,</span> <span class="pre">0.75,</span> <span class="pre">0.5]</span></code></p>
+</dd></dl>
+
+</section>
+<section id="level-2-habitat-labels">
+<h2>Level 2 Habitat Labels<a class="headerlink" href="#level-2-habitat-labels" title="Link to this heading"></a></h2>
+<dl class="py data">
+<dt class="sig sig-object py" id="bngmetric.constants.HABITAT_TO_LEVEL2">
+<span class="sig-prename descclassname"><span class="pre">bngmetric.constants.</span></span><span class="sig-name descname"><span class="pre">HABITAT_TO_LEVEL2</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#bngmetric.constants.HABITAT_TO_LEVEL2" title="Link to this definition"></a></dt>
+<dd><p>Maps specific habitat types to their Level 2 broad habitat category.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="bngmetric.constants.LEVEL2_TO_ID">
+<span class="sig-prename descclassname"><span class="pre">bngmetric.constants.</span></span><span class="sig-name descname"><span class="pre">LEVEL2_TO_ID</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#bngmetric.constants.LEVEL2_TO_ID" title="Link to this definition"></a></dt>
+<dd><p>Maps Level 2 habitat labels to integer IDs.</p>
+</dd></dl>
+
+</section>
+<section id="usage-example">
+<h2>Usage Example<a class="headerlink" href="#usage-example" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">bngmetric.constants</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">HABITAT_TYPE_TO_ID</span><span class="p">,</span>
+    <span class="n">CONDITION_CATEGORY_TO_ID</span><span class="p">,</span>
+    <span class="n">CONDITION_MULTIPLIERS_MATRIX</span><span class="p">,</span>
+    <span class="n">ID_TO_DISTINCTIVENESS_VALUE</span>
+<span class="p">)</span>
+
+<span class="c1"># Get IDs</span>
+<span class="n">habitat_id</span> <span class="o">=</span> <span class="n">HABITAT_TYPE_TO_ID</span><span class="p">[</span><span class="s1">&#39;Grassland - Lowland meadows&#39;</span><span class="p">]</span>
+<span class="n">condition_id</span> <span class="o">=</span> <span class="n">CONDITION_CATEGORY_TO_ID</span><span class="p">[</span><span class="s1">&#39;Good&#39;</span><span class="p">]</span>
+
+<span class="c1"># Look up values</span>
+<span class="n">distinctiveness</span> <span class="o">=</span> <span class="n">ID_TO_DISTINCTIVENESS_VALUE</span><span class="p">[</span><span class="n">habitat_id</span><span class="p">]</span>
+<span class="n">condition_multiplier</span> <span class="o">=</span> <span class="n">CONDITION_MULTIPLIERS_MATRIX</span><span class="p">[</span><span class="n">habitat_id</span><span class="p">,</span> <span class="n">condition_id</span><span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Distinctiveness: </span><span class="si">{</span><span class="n">distinctiveness</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Condition multiplier: </span><span class="si">{</span><span class="n">condition_multiplier</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="enhancement.html" class="btn btn-neutral float-left" title="Enhancement API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Peter Hurley.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

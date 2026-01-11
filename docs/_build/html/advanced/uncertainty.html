@@ -1,0 +1,391 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Uncertainty Propagation &mdash; bngmetric 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Core Calculations API" href="../api/core.html" />
+    <link rel="prev" title="Sensitivity Analysis" href="sensitivity.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            bngmetric
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../usage/basic.html">Basic Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/creation_enhancement.html">Habitat Creation &amp; Enhancement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/offsite.html">Off-site Compensation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced Analysis</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="sensitivity.html">Sensitivity Analysis</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Uncertainty Propagation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#sources-of-uncertainty">Sources of Uncertainty</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#confusion-matrix-approach">Confusion Matrix Approach</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#monte-carlo-propagation">Monte Carlo Propagation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#vectorised-monte-carlo">Vectorised Monte Carlo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#condition-uncertainty">Condition Uncertainty</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#area-uncertainty">Area Uncertainty</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#combined-uncertainty">Combined Uncertainty</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#reporting-uncertainty">Reporting Uncertainty</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#integration-with-numpyro">Integration with NumPyro</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/core.html">Core Calculations API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/creation.html">Creation API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/enhancement.html">Enhancement API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/constants.html">Constants API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">bngmetric</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Uncertainty Propagation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/advanced/uncertainty.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="uncertainty-propagation">
+<h1>Uncertainty Propagation<a class="headerlink" href="#uncertainty-propagation" title="Link to this heading"></a></h1>
+<p>A powerful application of bngmetric’s JAX foundation is <strong>probabilistic
+propagation of uncertainty</strong> through the BNG metric. This enables rigorous
+quantification of how input uncertainties affect biodiversity unit calculations.</p>
+<section id="sources-of-uncertainty">
+<h2>Sources of Uncertainty<a class="headerlink" href="#sources-of-uncertainty" title="Link to this heading"></a></h2>
+<p>BNG assessments involve several sources of uncertainty:</p>
+<ol class="arabic simple">
+<li><p><strong>Habitat Classification Uncertainty</strong></p>
+<ul class="simple">
+<li><p>Remote sensing classification errors</p></li>
+<li><p>Ecologist misidentification</p></li>
+<li><p>Boundary delineation errors</p></li>
+</ul>
+</li>
+<li><p><strong>Condition Assessment Uncertainty</strong></p>
+<ul class="simple">
+<li><p>Subjective condition scoring</p></li>
+<li><p>Temporal variability</p></li>
+<li><p>Sampling limitations</p></li>
+</ul>
+</li>
+<li><p><strong>Area Measurement Uncertainty</strong></p>
+<ul class="simple">
+<li><p>GIS digitisation errors</p></li>
+<li><p>Survey precision</p></li>
+</ul>
+</li>
+<li><p><strong>Temporal Uncertainty</strong></p>
+<ul class="simple">
+<li><p>Will the habitat reach target condition?</p></li>
+<li><p>How long will it actually take?</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="confusion-matrix-approach">
+<h2>Confusion Matrix Approach<a class="headerlink" href="#confusion-matrix-approach" title="Link to this heading"></a></h2>
+<p>For habitat classification from remote sensing or field surveys, uncertainty
+is often characterised by a <strong>confusion matrix</strong> showing the probability of
+each true class being assigned to each predicted class.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">jax.numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">jnp</span>
+
+<span class="c1"># Example confusion matrix (3 habitat types)</span>
+<span class="c1"># Rows = true class, Columns = predicted class</span>
+<span class="n">confusion_matrix</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+    <span class="p">[</span><span class="mf">0.85</span><span class="p">,</span> <span class="mf">0.10</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">],</span>  <span class="c1"># True: Grassland</span>
+    <span class="p">[</span><span class="mf">0.08</span><span class="p">,</span> <span class="mf">0.88</span><span class="p">,</span> <span class="mf">0.04</span><span class="p">],</span>  <span class="c1"># True: Woodland</span>
+    <span class="p">[</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.90</span><span class="p">],</span>  <span class="c1"># True: Heathland</span>
+<span class="p">])</span>
+
+<span class="c1"># Each row sums to 1.0 (probability distribution over predictions)</span>
+</pre></div>
+</div>
+</section>
+<section id="monte-carlo-propagation">
+<h2>Monte Carlo Propagation<a class="headerlink" href="#monte-carlo-propagation" title="Link to this heading"></a></h2>
+<p>Use Monte Carlo sampling to propagate classification uncertainty:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">jax</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jax.numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">jnp</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jax.random</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">random</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bngmetric.core_calculations</span><span class="w"> </span><span class="kn">import</span> <span class="n">calculate_batched_baseline_bng_units</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bngmetric.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">HABITAT_TYPE_TO_ID</span><span class="p">,</span> <span class="n">CONDITION_CATEGORY_TO_ID</span>
+
+<span class="c1"># Define the observed (potentially misclassified) habitats</span>
+<span class="n">observed_habitat_ids</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>  <span class="c1"># What we classified</span>
+<span class="n">condition_ids</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>  <span class="c1"># Moderate, Good, Poor</span>
+<span class="n">areas</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">2.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">])</span>
+<span class="n">strategic</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.15</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">])</span>
+
+<span class="c1"># Confusion matrix (probability of true class given observed class)</span>
+<span class="c1"># In practice, derive this from validation data</span>
+<span class="n">confusion</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+    <span class="p">[</span><span class="mf">0.85</span><span class="p">,</span> <span class="mf">0.10</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">0.08</span><span class="p">,</span> <span class="mf">0.88</span><span class="p">,</span> <span class="mf">0.04</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.90</span><span class="p">],</span>
+<span class="p">])</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">sample_true_habitats</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">observed_ids</span><span class="p">,</span> <span class="n">confusion_matrix</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sample true habitat IDs given observed IDs and confusion matrix.&quot;&quot;&quot;</span>
+    <span class="n">true_ids</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">obs_id</span> <span class="ow">in</span> <span class="n">observed_ids</span><span class="p">:</span>
+        <span class="n">subkey</span><span class="p">,</span> <span class="n">key</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="c1"># Sample from confusion matrix row for this observed class</span>
+        <span class="n">probs</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">[</span><span class="n">obs_id</span><span class="p">]</span>
+        <span class="n">true_id</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">categorical</span><span class="p">(</span><span class="n">subkey</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">probs</span><span class="p">))</span>
+        <span class="n">true_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">true_id</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">true_ids</span><span class="p">)</span>
+
+<span class="c1"># Monte Carlo simulation</span>
+<span class="n">n_samples</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">key</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">PRNGKey</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_samples</span><span class="p">):</span>
+    <span class="n">key</span><span class="p">,</span> <span class="n">subkey</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+    <span class="n">true_habitats</span> <span class="o">=</span> <span class="n">sample_true_habitats</span><span class="p">(</span><span class="n">subkey</span><span class="p">,</span> <span class="n">observed_habitat_ids</span><span class="p">,</span> <span class="n">confusion</span><span class="p">)</span>
+    <span class="n">units</span> <span class="o">=</span> <span class="n">calculate_batched_baseline_bng_units</span><span class="p">(</span>
+        <span class="n">true_habitats</span><span class="p">,</span> <span class="n">condition_ids</span><span class="p">,</span> <span class="n">areas</span><span class="p">,</span> <span class="n">strategic</span>
+    <span class="p">)</span>
+    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">units</span><span class="p">))</span>
+
+<span class="n">results</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mean units: </span><span class="si">{</span><span class="n">jnp</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">results</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Std dev: </span><span class="si">{</span><span class="n">jnp</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">results</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;95% CI: [</span><span class="si">{</span><span class="n">jnp</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">results</span><span class="p">,</span><span class="w"> </span><span class="mf">2.5</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">jnp</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">results</span><span class="p">,</span><span class="w"> </span><span class="mf">97.5</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="vectorised-monte-carlo">
+<h2>Vectorised Monte Carlo<a class="headerlink" href="#vectorised-monte-carlo" title="Link to this heading"></a></h2>
+<p>For efficiency, vectorise across samples using <code class="docutils literal notranslate"><span class="pre">vmap</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
+
+<span class="nd">@partial</span><span class="p">(</span><span class="n">jax</span><span class="o">.</span><span class="n">vmap</span><span class="p">,</span> <span class="n">in_axes</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">compute_units_sample</span><span class="p">(</span><span class="n">habitat_ids</span><span class="p">,</span> <span class="n">condition_ids</span><span class="p">,</span> <span class="n">areas</span><span class="p">,</span> <span class="n">strategic</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute units for one sample of habitat classifications.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">calculate_batched_baseline_bng_units</span><span class="p">(</span>
+        <span class="n">habitat_ids</span><span class="p">,</span> <span class="n">condition_ids</span><span class="p">,</span> <span class="n">areas</span><span class="p">,</span> <span class="n">strategic</span>
+    <span class="p">))</span>
+
+<span class="c1"># Generate all samples at once</span>
+<span class="n">keys</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">)</span>
+<span class="c1"># ... sample habitats for each key</span>
+<span class="c1"># ... compute all results in parallel</span>
+</pre></div>
+</div>
+</section>
+<section id="condition-uncertainty">
+<h2>Condition Uncertainty<a class="headerlink" href="#condition-uncertainty" title="Link to this heading"></a></h2>
+<p>Similarly, propagate uncertainty in condition assessments:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Condition confusion matrix</span>
+<span class="c1"># True condition vs assessed condition</span>
+<span class="n">condition_confusion</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+    <span class="p">[</span><span class="mf">0.80</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.00</span><span class="p">,</span> <span class="mf">0.00</span><span class="p">],</span>  <span class="c1"># True: Good</span>
+    <span class="p">[</span><span class="mf">0.10</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">,</span> <span class="mf">0.10</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.00</span><span class="p">],</span>  <span class="c1"># True: Fairly Good</span>
+    <span class="p">[</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">,</span> <span class="mf">0.65</span><span class="p">,</span> <span class="mf">0.10</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">],</span>  <span class="c1"># True: Moderate</span>
+    <span class="p">[</span><span class="mf">0.00</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">,</span> <span class="mf">0.70</span><span class="p">,</span> <span class="mf">0.10</span><span class="p">],</span>  <span class="c1"># True: Fairly Poor</span>
+    <span class="p">[</span><span class="mf">0.00</span><span class="p">,</span> <span class="mf">0.00</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">,</span> <span class="mf">0.80</span><span class="p">],</span>  <span class="c1"># True: Poor</span>
+<span class="p">])</span>
+
+<span class="c1"># Sample true conditions given assessed conditions</span>
+<span class="c1"># Then propagate through the metric</span>
+</pre></div>
+</div>
+</section>
+<section id="area-uncertainty">
+<h2>Area Uncertainty<a class="headerlink" href="#area-uncertainty" title="Link to this heading"></a></h2>
+<p>For continuous parameters like area, use Gaussian uncertainty:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Areas with uncertainty (mean, std)</span>
+<span class="n">area_means</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">2.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">])</span>
+<span class="n">area_stds</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.02</span><span class="p">])</span>  <span class="c1"># e.g., 4% relative uncertainty</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">sample_areas</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">means</span><span class="p">,</span> <span class="n">stds</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">means</span> <span class="o">+</span> <span class="n">stds</span> <span class="o">*</span> <span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">means</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+<span class="c1"># Monte Carlo with area uncertainty</span>
+<span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_samples</span><span class="p">):</span>
+    <span class="n">key</span><span class="p">,</span> <span class="n">subkey</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+    <span class="n">sampled_areas</span> <span class="o">=</span> <span class="n">sample_areas</span><span class="p">(</span><span class="n">subkey</span><span class="p">,</span> <span class="n">area_means</span><span class="p">,</span> <span class="n">area_stds</span><span class="p">)</span>
+    <span class="n">sampled_areas</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">sampled_areas</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>  <span class="c1"># Ensure non-negative</span>
+    <span class="n">units</span> <span class="o">=</span> <span class="n">calculate_batched_baseline_bng_units</span><span class="p">(</span>
+        <span class="n">habitat_ids</span><span class="p">,</span> <span class="n">condition_ids</span><span class="p">,</span> <span class="n">sampled_areas</span><span class="p">,</span> <span class="n">strategic</span>
+    <span class="p">)</span>
+    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">units</span><span class="p">))</span>
+</pre></div>
+</div>
+</section>
+<section id="combined-uncertainty">
+<h2>Combined Uncertainty<a class="headerlink" href="#combined-uncertainty" title="Link to this heading"></a></h2>
+<p>Propagate multiple sources of uncertainty simultaneously:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">sample_all_inputs</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">observed_habitats</span><span class="p">,</span> <span class="n">assessed_conditions</span><span class="p">,</span>
+                      <span class="n">area_means</span><span class="p">,</span> <span class="n">area_stds</span><span class="p">,</span> <span class="n">habitat_confusion</span><span class="p">,</span> <span class="n">condition_confusion</span><span class="p">):</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+
+    <span class="c1"># Sample true habitats</span>
+    <span class="n">true_habitats</span> <span class="o">=</span> <span class="n">sample_true_habitats</span><span class="p">(</span><span class="n">keys</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">observed_habitats</span><span class="p">,</span> <span class="n">habitat_confusion</span><span class="p">)</span>
+
+    <span class="c1"># Sample true conditions</span>
+    <span class="n">true_conditions</span> <span class="o">=</span> <span class="n">sample_true_conditions</span><span class="p">(</span><span class="n">keys</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">assessed_conditions</span><span class="p">,</span> <span class="n">condition_confusion</span><span class="p">)</span>
+
+    <span class="c1"># Sample areas</span>
+    <span class="n">true_areas</span> <span class="o">=</span> <span class="n">sample_areas</span><span class="p">(</span><span class="n">keys</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">area_means</span><span class="p">,</span> <span class="n">area_stds</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">true_habitats</span><span class="p">,</span> <span class="n">true_conditions</span><span class="p">,</span> <span class="n">true_areas</span>
+
+<span class="c1"># Full uncertainty propagation</span>
+<span class="n">all_results</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_samples</span><span class="p">):</span>
+    <span class="n">key</span><span class="p">,</span> <span class="n">subkey</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+    <span class="n">habs</span><span class="p">,</span> <span class="n">conds</span><span class="p">,</span> <span class="n">areas</span> <span class="o">=</span> <span class="n">sample_all_inputs</span><span class="p">(</span>
+        <span class="n">subkey</span><span class="p">,</span> <span class="n">observed_habitat_ids</span><span class="p">,</span> <span class="n">observed_condition_ids</span><span class="p">,</span>
+        <span class="n">area_means</span><span class="p">,</span> <span class="n">area_stds</span><span class="p">,</span> <span class="n">habitat_confusion</span><span class="p">,</span> <span class="n">condition_confusion</span>
+    <span class="p">)</span>
+    <span class="n">units</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">calculate_batched_baseline_bng_units</span><span class="p">(</span>
+        <span class="n">habs</span><span class="p">,</span> <span class="n">conds</span><span class="p">,</span> <span class="n">areas</span><span class="p">,</span> <span class="n">strategic</span>
+    <span class="p">))</span>
+    <span class="n">all_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">units</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="reporting-uncertainty">
+<h2>Reporting Uncertainty<a class="headerlink" href="#reporting-uncertainty" title="Link to this heading"></a></h2>
+<p>Present results with appropriate uncertainty bounds:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">all_results</span><span class="p">)</span>
+
+<span class="n">report</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;mean&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">results</span><span class="p">)),</span>
+    <span class="s1">&#39;std&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">results</span><span class="p">)),</span>
+    <span class="s1">&#39;median&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">results</span><span class="p">)),</span>
+    <span class="s1">&#39;ci_lower&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">)),</span>
+    <span class="s1">&#39;ci_upper&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="mf">97.5</span><span class="p">)),</span>
+    <span class="s1">&#39;p10&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="mi">10</span><span class="p">)),</span>
+    <span class="s1">&#39;p90&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="mi">90</span><span class="p">)),</span>
+<span class="p">}</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Biodiversity Units: </span><span class="si">{</span><span class="n">report</span><span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> &quot;</span>
+      <span class="sa">f</span><span class="s2">&quot;(95% CI: </span><span class="si">{</span><span class="n">report</span><span class="p">[</span><span class="s1">&#39;ci_lower&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">report</span><span class="p">[</span><span class="s1">&#39;ci_upper&#39;</span><span class="p">]</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="integration-with-numpyro">
+<h2>Integration with NumPyro<a class="headerlink" href="#integration-with-numpyro" title="Link to this heading"></a></h2>
+<p>For more sophisticated Bayesian inference, bngmetric integrates with NumPyro:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpyro</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpyro.distributions</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">dist</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numpyro.infer</span><span class="w"> </span><span class="kn">import</span> <span class="n">MCMC</span><span class="p">,</span> <span class="n">NUTS</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">bng_model</span><span class="p">(</span><span class="n">observed_habitats</span><span class="p">,</span> <span class="n">areas</span><span class="p">,</span> <span class="n">strategic</span><span class="p">):</span>
+    <span class="c1"># Prior on true habitat classifications</span>
+    <span class="n">habitat_probs</span> <span class="o">=</span> <span class="n">numpyro</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span>
+        <span class="s1">&#39;habitat_probs&#39;</span><span class="p">,</span>
+        <span class="n">dist</span><span class="o">.</span><span class="n">Dirichlet</span><span class="p">(</span><span class="n">jnp</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n_habitat_types</span><span class="p">))</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Sample true habitats</span>
+    <span class="n">true_habitats</span> <span class="o">=</span> <span class="n">numpyro</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span>
+        <span class="s1">&#39;true_habitats&#39;</span><span class="p">,</span>
+        <span class="n">dist</span><span class="o">.</span><span class="n">Categorical</span><span class="p">(</span><span class="n">probs</span><span class="o">=</span><span class="n">habitat_probs</span><span class="p">),</span>
+        <span class="n">sample_shape</span><span class="o">=</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">observed_habitats</span><span class="p">),)</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Compute units (deterministic given habitats)</span>
+    <span class="n">units</span> <span class="o">=</span> <span class="n">calculate_batched_baseline_bng_units</span><span class="p">(</span>
+        <span class="n">true_habitats</span><span class="p">,</span> <span class="n">condition_ids</span><span class="p">,</span> <span class="n">areas</span><span class="p">,</span> <span class="n">strategic</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">jnp</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">units</span><span class="p">)</span>
+
+<span class="c1"># Run MCMC for posterior inference</span>
+<span class="c1"># ...</span>
+</pre></div>
+</div>
+<p>This enables full Bayesian treatment of classification uncertainty, including
+incorporation of prior ecological knowledge.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="sensitivity.html" class="btn btn-neutral float-left" title="Sensitivity Analysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../api/core.html" class="btn btn-neutral float-right" title="Core Calculations API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Peter Hurley.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

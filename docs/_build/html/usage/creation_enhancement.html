@@ -1,0 +1,271 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Habitat Creation &amp; Enhancement &mdash; bngmetric 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Off-site Compensation" href="offsite.html" />
+    <link rel="prev" title="Basic Usage" href="basic.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            bngmetric
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="basic.html">Basic Usage</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Habitat Creation &amp; Enhancement</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#habitat-creation">Habitat Creation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#formula">Formula</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#basic-creation-calculation">Basic Creation Calculation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#habitat-enhancement">Habitat Enhancement</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#condition-enhancement">Condition Enhancement</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#distinctiveness-enhancement">Distinctiveness Enhancement</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#understanding-uplift">Understanding Uplift</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#using-jax-arrays">Using JAX Arrays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#disallowed-combinations">Disallowed Combinations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="offsite.html">Off-site Compensation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced Analysis</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../advanced/sensitivity.html">Sensitivity Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../advanced/uncertainty.html">Uncertainty Propagation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/core.html">Core Calculations API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/creation.html">Creation API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/enhancement.html">Enhancement API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/constants.html">Constants API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">bngmetric</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Habitat Creation &amp; Enhancement</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/usage/creation_enhancement.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="habitat-creation-enhancement">
+<h1>Habitat Creation &amp; Enhancement<a class="headerlink" href="#habitat-creation-enhancement" title="Link to this heading"></a></h1>
+<p>This guide covers calculating biodiversity units for habitat creation and
+enhancement interventions.</p>
+<section id="habitat-creation">
+<h2>Habitat Creation<a class="headerlink" href="#habitat-creation" title="Link to this heading"></a></h2>
+<p>Habitat creation involves establishing new habitats where none existed before
+(or replacing a lower-value habitat). Creation calculations include additional
+multipliers for:</p>
+<ul class="simple">
+<li><p><strong>Temporal risk</strong>: Time required to reach target condition</p></li>
+<li><p><strong>Difficulty</strong>: Technical difficulty of creating the habitat</p></li>
+</ul>
+<section id="formula">
+<h3>Formula<a class="headerlink" href="#formula" title="Link to this heading"></a></h3>
+<div class="math notranslate nohighlight">
+\[\text{Creation Units} = \text{Area} \times \text{Distinctiveness} \times \text{Condition} \times \text{Strategic} \times \text{Temporal} \times \text{Difficulty}\]</div>
+</section>
+<section id="basic-creation-calculation">
+<h3>Basic Creation Calculation<a class="headerlink" href="#basic-creation-calculation" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bngmetric.creation</span><span class="w"> </span><span class="kn">import</span> <span class="n">calculate_creation_bng_from_dataframe</span>
+
+<span class="n">creation</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s1">&#39;Habitat&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Grassland - Lowland meadows&#39;</span><span class="p">,</span> <span class="s1">&#39;Wetland - Reedbeds&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;Condition&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Good&#39;</span><span class="p">,</span> <span class="s1">&#39;Moderate&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;Area&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">],</span>
+    <span class="s1">&#39;Strategic_Significance&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">1.15</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
+<span class="p">})</span>
+
+<span class="n">units</span> <span class="o">=</span> <span class="n">calculate_creation_bng_from_dataframe</span><span class="p">(</span><span class="n">creation</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Creation units: </span><span class="si">{</span><span class="n">units</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="habitat-enhancement">
+<h2>Habitat Enhancement<a class="headerlink" href="#habitat-enhancement" title="Link to this heading"></a></h2>
+<p>Enhancement improves existing habitat, either by:</p>
+<ol class="arabic simple">
+<li><p><strong>Condition enhancement</strong>: Improving the condition of the same habitat type
+(e.g., Poor grassland to Good grassland)</p></li>
+<li><p><strong>Distinctiveness enhancement</strong>: Converting to a higher distinctiveness
+habitat within the same broad habitat type</p></li>
+</ol>
+<section id="condition-enhancement">
+<h3>Condition Enhancement<a class="headerlink" href="#condition-enhancement" title="Link to this heading"></a></h3>
+<p>For improving condition within the same habitat:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bngmetric.enhancement</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">calculate_enhancement_bng_from_dataframe</span><span class="p">,</span>
+    <span class="n">calculate_enhancement_uplift_from_dataframe</span>
+<span class="p">)</span>
+
+<span class="n">enhancement</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s1">&#39;Habitat&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Grassland - Lowland meadows&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;Start_Condition&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Poor&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;Target_Condition&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Good&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;Area&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">2.0</span><span class="p">],</span>
+    <span class="s1">&#39;Strategic_Significance&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">1.15</span><span class="p">]</span>
+<span class="p">})</span>
+
+<span class="c1"># Post-enhancement units</span>
+<span class="n">post_units</span> <span class="o">=</span> <span class="n">calculate_enhancement_bng_from_dataframe</span><span class="p">(</span><span class="n">enhancement</span><span class="p">)</span>
+
+<span class="c1"># Net uplift (post - baseline)</span>
+<span class="n">uplift</span> <span class="o">=</span> <span class="n">calculate_enhancement_uplift_from_dataframe</span><span class="p">(</span><span class="n">enhancement</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Post-enhancement units: </span><span class="si">{</span><span class="n">post_units</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Net uplift: </span><span class="si">{</span><span class="n">uplift</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="distinctiveness-enhancement">
+<h3>Distinctiveness Enhancement<a class="headerlink" href="#distinctiveness-enhancement" title="Link to this heading"></a></h3>
+<p>For converting to a higher distinctiveness habitat (within the same broad type):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bngmetric.enhancement</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">calculate_distinctiveness_enhancement_bng_from_dataframe</span><span class="p">,</span>
+    <span class="n">calculate_distinctiveness_enhancement_uplift_from_dataframe</span>
+<span class="p">)</span>
+
+<span class="n">enhancement</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s1">&#39;Baseline_Habitat&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Grassland - Modified grassland&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;Baseline_Condition&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Poor&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;Target_Habitat&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Grassland - Lowland meadows&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;Target_Condition&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Moderate&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;Area&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">2.0</span><span class="p">],</span>
+    <span class="s1">&#39;Strategic_Significance&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">1.15</span><span class="p">]</span>
+<span class="p">})</span>
+
+<span class="n">units</span> <span class="o">=</span> <span class="n">calculate_distinctiveness_enhancement_bng_from_dataframe</span><span class="p">(</span><span class="n">enhancement</span><span class="p">)</span>
+<span class="n">uplift</span> <span class="o">=</span> <span class="n">calculate_distinctiveness_enhancement_uplift_from_dataframe</span><span class="p">(</span><span class="n">enhancement</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="understanding-uplift">
+<h2>Understanding Uplift<a class="headerlink" href="#understanding-uplift" title="Link to this heading"></a></h2>
+<p>The <strong>uplift</strong> represents the net biodiversity gain from an intervention:</p>
+<div class="math notranslate nohighlight">
+\[\text{Uplift} = \text{Post-intervention Units} - \text{Baseline Units}\]</div>
+<p>This is the key metric for demonstrating biodiversity net gain.</p>
+</section>
+<section id="using-jax-arrays">
+<h2>Using JAX Arrays<a class="headerlink" href="#using-jax-arrays" title="Link to this heading"></a></h2>
+<p>For integration with JAX workflows or when processing large datasets:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">jax.numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">jnp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bngmetric.creation</span><span class="w"> </span><span class="kn">import</span> <span class="n">calculate_batched_creation_bng_units</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bngmetric.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">HABITAT_TYPE_TO_ID</span><span class="p">,</span> <span class="n">CONDITION_CATEGORY_TO_ID</span>
+
+<span class="n">habitat_ids</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">HABITAT_TYPE_TO_ID</span><span class="p">[</span><span class="s1">&#39;Grassland - Lowland meadows&#39;</span><span class="p">]])</span>
+<span class="n">condition_ids</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">CONDITION_CATEGORY_TO_ID</span><span class="p">[</span><span class="s1">&#39;Good&#39;</span><span class="p">]])</span>
+<span class="n">areas</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">3.0</span><span class="p">])</span>
+<span class="n">strategic</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.15</span><span class="p">])</span>
+
+<span class="n">units</span> <span class="o">=</span> <span class="n">calculate_batched_creation_bng_units</span><span class="p">(</span>
+    <span class="n">habitat_ids</span><span class="p">,</span> <span class="n">condition_ids</span><span class="p">,</span> <span class="n">areas</span><span class="p">,</span> <span class="n">strategic</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="disallowed-combinations">
+<h2>Disallowed Combinations<a class="headerlink" href="#disallowed-combinations" title="Link to this heading"></a></h2>
+<p>Not all habitat/condition combinations are valid for creation or enhancement.
+Invalid combinations return 0 units (the temporal multiplier is set to 0).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">bngmetric.creation</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_temporal_multiplier</span>
+
+<span class="c1"># Check if a creation pathway is valid</span>
+<span class="n">temporal_m</span> <span class="o">=</span> <span class="n">get_temporal_multiplier</span><span class="p">(</span><span class="n">habitat_id</span><span class="p">,</span> <span class="n">condition_id</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">temporal_m</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;This habitat/condition combination is not valid for creation&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="basic.html" class="btn btn-neutral float-left" title="Basic Usage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="offsite.html" class="btn btn-neutral float-right" title="Off-site Compensation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Peter Hurley.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

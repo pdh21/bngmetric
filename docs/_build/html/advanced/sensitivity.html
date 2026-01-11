@@ -1,0 +1,284 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sensitivity Analysis &mdash; bngmetric 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Uncertainty Propagation" href="uncertainty.html" />
+    <link rel="prev" title="Off-site Compensation" href="../usage/offsite.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            bngmetric
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../usage/basic.html">Basic Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/creation_enhancement.html">Habitat Creation &amp; Enhancement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../usage/offsite.html">Off-site Compensation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced Analysis</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Sensitivity Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#why-sensitivity-analysis">Why Sensitivity Analysis?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#computing-gradients-with-jax">Computing Gradients with JAX</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#interpreting-gradients">Interpreting Gradients</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sensitivity-to-strategic-significance">Sensitivity to Strategic Significance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#value-and-gradient-together">Value and Gradient Together</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sensitivity-for-creation-enhancement">Sensitivity for Creation/Enhancement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#jacobian-for-multiple-outputs">Jacobian for Multiple Outputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#practical-applications">Practical Applications</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="uncertainty.html">Uncertainty Propagation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/core.html">Core Calculations API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/creation.html">Creation API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/enhancement.html">Enhancement API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/constants.html">Constants API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">bngmetric</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Sensitivity Analysis</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/advanced/sensitivity.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="sensitivity-analysis">
+<h1>Sensitivity Analysis<a class="headerlink" href="#sensitivity-analysis" title="Link to this heading"></a></h1>
+<p>One of the key advantages of bngmetric’s JAX implementation is the ability to
+compute <strong>exact gradients</strong> of biodiversity units with respect to input
+parameters. This enables rigorous sensitivity analysis to understand which
+factors most influence your BNG calculations.</p>
+<section id="why-sensitivity-analysis">
+<h2>Why Sensitivity Analysis?<a class="headerlink" href="#why-sensitivity-analysis" title="Link to this heading"></a></h2>
+<p>Understanding sensitivity helps answer questions like:</p>
+<ul class="simple">
+<li><p>Which parcels contribute most to total biodiversity units?</p></li>
+<li><p>How much does a 10% increase in area affect the outcome?</p></li>
+<li><p>Which habitat types are most sensitive to condition changes?</p></li>
+<li><p>Where should I focus habitat quality improvements for maximum gain?</p></li>
+</ul>
+</section>
+<section id="computing-gradients-with-jax">
+<h2>Computing Gradients with JAX<a class="headerlink" href="#computing-gradients-with-jax" title="Link to this heading"></a></h2>
+<p>JAX’s automatic differentiation computes exact gradients efficiently:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">jax</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jax.numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">jnp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bngmetric.core_calculations</span><span class="w"> </span><span class="kn">import</span> <span class="n">calculate_total_bng_from_jax_arrays</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bngmetric.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">HABITAT_TYPE_TO_ID</span><span class="p">,</span> <span class="n">CONDITION_CATEGORY_TO_ID</span>
+
+<span class="c1"># Define habitat parcels</span>
+<span class="n">habitat_ids</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+    <span class="n">HABITAT_TYPE_TO_ID</span><span class="p">[</span><span class="s1">&#39;Grassland - Lowland meadows&#39;</span><span class="p">],</span>
+    <span class="n">HABITAT_TYPE_TO_ID</span><span class="p">[</span><span class="s1">&#39;Woodland - Lowland mixed deciduous woodland&#39;</span><span class="p">],</span>
+    <span class="n">HABITAT_TYPE_TO_ID</span><span class="p">[</span><span class="s1">&#39;Heathland and shrub - Lowland heathland&#39;</span><span class="p">]</span>
+<span class="p">])</span>
+<span class="n">condition_ids</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+    <span class="n">CONDITION_CATEGORY_TO_ID</span><span class="p">[</span><span class="s1">&#39;Moderate&#39;</span><span class="p">],</span>
+    <span class="n">CONDITION_CATEGORY_TO_ID</span><span class="p">[</span><span class="s1">&#39;Good&#39;</span><span class="p">],</span>
+    <span class="n">CONDITION_CATEGORY_TO_ID</span><span class="p">[</span><span class="s1">&#39;Poor&#39;</span><span class="p">]</span>
+<span class="p">])</span>
+<span class="n">areas</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">2.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">])</span>
+<span class="n">strategic</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.15</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">])</span>
+
+<span class="c1"># Define function to differentiate</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">total_units</span><span class="p">(</span><span class="n">areas_param</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">calculate_total_bng_from_jax_arrays</span><span class="p">(</span>
+        <span class="n">habitat_ids</span><span class="p">,</span> <span class="n">condition_ids</span><span class="p">,</span> <span class="n">areas_param</span><span class="p">,</span> <span class="n">strategic</span>
+    <span class="p">)</span>
+
+<span class="c1"># Compute gradient with respect to area</span>
+<span class="n">grad_fn</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">grad</span><span class="p">(</span><span class="n">total_units</span><span class="p">)</span>
+<span class="n">gradients</span> <span class="o">=</span> <span class="n">grad_fn</span><span class="p">(</span><span class="n">areas</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Gradient of total units with respect to each parcel&#39;s area:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">area</span><span class="p">,</span> <span class="n">grad</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">areas</span><span class="p">,</span> <span class="n">gradients</span><span class="p">)):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Parcel </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">: area=</span><span class="si">{</span><span class="n">area</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">ha, dUnits/dArea=</span><span class="si">{</span><span class="n">grad</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="interpreting-gradients">
+<h2>Interpreting Gradients<a class="headerlink" href="#interpreting-gradients" title="Link to this heading"></a></h2>
+<p>The gradient tells you the <strong>marginal change</strong> in biodiversity units per unit
+change in the input:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># A gradient of 5.0 means:</span>
+<span class="c1"># Increasing this parcel&#39;s area by 1 hectare increases total units by 5.0</span>
+
+<span class="c1"># Identify the most sensitive parcel</span>
+<span class="n">most_sensitive</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">gradients</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Parcel </span><span class="si">{</span><span class="n">most_sensitive</span><span class="si">}</span><span class="s2"> has the highest marginal contribution&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="sensitivity-to-strategic-significance">
+<h2>Sensitivity to Strategic Significance<a class="headerlink" href="#sensitivity-to-strategic-significance" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">total_units_strategic</span><span class="p">(</span><span class="n">strategic_param</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">calculate_total_bng_from_jax_arrays</span><span class="p">(</span>
+        <span class="n">habitat_ids</span><span class="p">,</span> <span class="n">condition_ids</span><span class="p">,</span> <span class="n">areas</span><span class="p">,</span> <span class="n">strategic_param</span>
+    <span class="p">)</span>
+
+<span class="n">grad_strategic</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">grad</span><span class="p">(</span><span class="n">total_units_strategic</span><span class="p">)</span>
+<span class="n">grads</span> <span class="o">=</span> <span class="n">grad_strategic</span><span class="p">(</span><span class="n">strategic</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Sensitivity to strategic significance multiplier:&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">grad</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">grads</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Parcel </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">: dUnits/dStrategic=</span><span class="si">{</span><span class="n">grad</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="value-and-gradient-together">
+<h2>Value and Gradient Together<a class="headerlink" href="#value-and-gradient-together" title="Link to this heading"></a></h2>
+<p>Use <code class="docutils literal notranslate"><span class="pre">jax.value_and_grad</span></code> to compute both the function value and gradient
+in a single pass:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">value_and_grad_fn</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">value_and_grad</span><span class="p">(</span><span class="n">total_units</span><span class="p">)</span>
+<span class="n">total</span><span class="p">,</span> <span class="n">gradients</span> <span class="o">=</span> <span class="n">value_and_grad_fn</span><span class="p">(</span><span class="n">areas</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total units: </span><span class="si">{</span><span class="n">total</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Gradients: </span><span class="si">{</span><span class="n">gradients</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="sensitivity-for-creation-enhancement">
+<h2>Sensitivity for Creation/Enhancement<a class="headerlink" href="#sensitivity-for-creation-enhancement" title="Link to this heading"></a></h2>
+<p>The same approach works for creation and enhancement calculations:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">bngmetric.creation</span><span class="w"> </span><span class="kn">import</span> <span class="n">calculate_total_creation_units_from_jax_arrays</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">creation_units</span><span class="p">(</span><span class="n">areas_param</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">calculate_total_creation_units_from_jax_arrays</span><span class="p">(</span>
+        <span class="n">habitat_ids</span><span class="p">,</span> <span class="n">condition_ids</span><span class="p">,</span> <span class="n">areas_param</span><span class="p">,</span> <span class="n">strategic</span>
+    <span class="p">)</span>
+
+<span class="n">grad_creation</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">grad</span><span class="p">(</span><span class="n">creation_units</span><span class="p">)</span>
+<span class="n">creation_grads</span> <span class="o">=</span> <span class="n">grad_creation</span><span class="p">(</span><span class="n">areas</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="jacobian-for-multiple-outputs">
+<h2>Jacobian for Multiple Outputs<a class="headerlink" href="#jacobian-for-multiple-outputs" title="Link to this heading"></a></h2>
+<p>For per-parcel gradients (Jacobian matrix):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">bngmetric.core_calculations</span><span class="w"> </span><span class="kn">import</span> <span class="n">calculate_batched_baseline_bng_units</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">parcel_units</span><span class="p">(</span><span class="n">areas_param</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">calculate_batched_baseline_bng_units</span><span class="p">(</span>
+        <span class="n">habitat_ids</span><span class="p">,</span> <span class="n">condition_ids</span><span class="p">,</span> <span class="n">areas_param</span><span class="p">,</span> <span class="n">strategic</span>
+    <span class="p">)</span>
+
+<span class="c1"># Jacobian: d(each output) / d(each input)</span>
+<span class="n">jacobian</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">jacobian</span><span class="p">(</span><span class="n">parcel_units</span><span class="p">)(</span><span class="n">areas</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Jacobian shape: </span><span class="si">{</span><span class="n">jacobian</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># (n_parcels, n_parcels)</span>
+</pre></div>
+</div>
+</section>
+<section id="practical-applications">
+<h2>Practical Applications<a class="headerlink" href="#practical-applications" title="Link to this heading"></a></h2>
+<p><strong>1. Identifying High-Value Interventions</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Which parcel gives best return on additional area?</span>
+<span class="n">best_parcel</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">gradients</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Prioritise expanding parcel </span><span class="si">{</span><span class="n">best_parcel</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>2. Optimising Habitat Distribution</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Use gradients to guide optimisation</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">jax.example_libraries</span><span class="w"> </span><span class="kn">import</span> <span class="n">optimizers</span>
+
+<span class="c1"># Example: maximise units subject to total area constraint</span>
+<span class="c1"># (Requires custom optimisation loop)</span>
+</pre></div>
+</div>
+<p><strong>3. Comparing Scenarios</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compare sensitivity between creation and enhancement</span>
+<span class="n">creation_sensitivity</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">grad</span><span class="p">(</span><span class="n">creation_units</span><span class="p">)(</span><span class="n">areas</span><span class="p">)</span>
+<span class="n">enhancement_sensitivity</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">grad</span><span class="p">(</span><span class="n">enhancement_units</span><span class="p">)(</span><span class="n">areas</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">areas</span><span class="p">)):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Parcel </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">: Creation=</span><span class="si">{</span><span class="n">creation_sensitivity</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, &quot;</span>
+          <span class="sa">f</span><span class="s2">&quot;Enhancement=</span><span class="si">{</span><span class="n">enhancement_sensitivity</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../usage/offsite.html" class="btn btn-neutral float-left" title="Off-site Compensation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="uncertainty.html" class="btn btn-neutral float-right" title="Uncertainty Propagation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Peter Hurley.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
