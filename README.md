@@ -6,10 +6,6 @@ An open source Python implementation of the UK's Biodiversity Net Gain (BNG) Sta
 
 [![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
 [![JAX](https://img.shields.io/badge/JAX-enabled-green.svg)](https://github.com/google/jax)
-[![Deploy Documentation](https://github.com/pdh21/bngmetric/acti<!-- doc badges -->
-    <a href='https://pdh21.github.com.io/bngmetric'>
-        <img src='https://readthedocs.com/projects/plenoptix-nerfstudio/badge/?version=latest' alt='Documentation Status' /></a>ons/workflows/docs.yml/badge.svg)](https://github.com/pdh21/bngmetric/actions/workflows/docs.yml)
-
 
 ## Overview
 
