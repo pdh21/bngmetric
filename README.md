@@ -59,11 +59,7 @@ sensitivities = grad_fn(areas)
 
 ## Installation
 
-```bash
-pip install bngmetric
-```
-
-Or install from source:
+Install from source:
 
 ```bash
 git clone https://github.com/pdh21/bngmetric.git
