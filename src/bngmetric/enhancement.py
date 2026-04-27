@@ -201,12 +201,17 @@ def calculate_distinctiveness_enhancement_bng_unit(
         area: Area in hectares
         strategic_multiplier: Strategic significance multiplier
     """
+
+    baseline_units = calculate_baseline_unit_for_enhancement(
+            baseline_habitat_id, baseline_condition_id, area, strategic_multiplier
+        )
+
     target_distinctiveness = get_distinctiveness_value(target_habitat_id)
     target_condition_m = get_condition_multiplier(target_habitat_id, target_condition_id)
     temporal_m = get_distinctiveness_enhancement_temporal_multiplier(target_habitat_id, target_condition_id)
     difficulty_m = get_enhancement_difficulty_multiplier(target_habitat_id)
 
-    units = area * target_distinctiveness * target_condition_m * strategic_multiplier * temporal_m * difficulty_m
+    units = (((area * target_distinctiveness * target_condition_m * strategic_multiplier) - (baseline_units)) * temporal_m * difficulty_m) + baseline_units
     return units
 
 
@@ -311,8 +316,9 @@ def calculate_distinctiveness_enhancement_bng_from_dataframe(df: pd.DataFrame) -
         areas, strategic_multipliers
     )
 
-    total_bng = jnp.sum(parcel_units)
-    return float(total_bng)
+    # total_bng = jnp.sum(parcel_units)
+    # return float(total_bng)
+    return parcel_units
 
 
 def calculate_distinctiveness_enhancement_uplift_from_dataframe(df: pd.DataFrame) -> float:
@@ -341,8 +347,9 @@ def calculate_distinctiveness_enhancement_uplift_from_dataframe(df: pd.DataFrame
         areas, strategic_multipliers
     )
 
-    total_uplift = jnp.sum(parcel_uplifts)
-    return float(total_uplift)
+    # total_uplift = jnp.sum(parcel_uplifts)
+    # return float(total_uplift)
+    return parcel_uplifts
 
 
 # Utility functions for JAX-based optimization (distinctiveness enhancement)
