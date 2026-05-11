@@ -316,9 +316,8 @@ def calculate_distinctiveness_enhancement_bng_from_dataframe(df: pd.DataFrame) -
         areas, strategic_multipliers
     )
 
-    # total_bng = jnp.sum(parcel_units)
-    # return float(total_bng)
-    return parcel_units
+    total_bng = jnp.sum(parcel_units)
+    return float(total_bng)
 
 
 def calculate_distinctiveness_enhancement_uplift_from_dataframe(df: pd.DataFrame) -> float:
@@ -347,9 +346,8 @@ def calculate_distinctiveness_enhancement_uplift_from_dataframe(df: pd.DataFrame
         areas, strategic_multipliers
     )
 
-    # total_uplift = jnp.sum(parcel_uplifts)
-    # return float(total_uplift)
-    return parcel_uplifts
+    total_uplift = jnp.sum(parcel_uplifts)
+    return float(total_uplift)
 
 
 # Utility functions for JAX-based optimization (distinctiveness enhancement)
